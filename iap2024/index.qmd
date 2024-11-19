@@ -65,9 +65,15 @@ logo1 : '
 
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}
 
-## AbstractLinearOperator Class
+## FURAX Operators
 
-This class provides:
+<br>
+
+The base class `AbstractLinearOperator` provides a default implementation for the usual linear algebra operations.
+
+<br>
+
+::: {style="font-size: 18px;"}
 
 | Operation   | FURAX | Comment |
 |-------------|-------|---------|
@@ -75,8 +81,48 @@ This class provides:
 | Composition | `A @ B` |   |
 | Multiplication by scalar | `k * A` | Returns the composition of a HomothetyOperator and A|
 | Transpose   | `A.T`  |  Through JAX autodiff, but can be overriden |
-| Inverse     | `A.I` | Unless specifically implemented, use CG but it can be configured using a context manager |
+| Inverse     | `A.I` | By default, use CG but it can be overriden or configured using a context manager |
+| Block Assembly | `BlockColumnOperator([A, B])` `BlockDiagonalOperator([A, B])` `BlockRowOperator([A, B])` | Handle any PyTree of Operators: `Block*Operator({'a': A, 'b': B})`|
+| Flattened dense matrix | `A.as_matrix()` | |
+| Algebraic reduction | `A.reduce()` | |
 
+: {tbl-colwidths="[25,35,40]"}
+
+:::
+
+## FURAX Operators
+
+::: {style="font-size: 18px;"}
+
+| Generic Operator                | Description |
+|---------------------------------|-------------|
+| `IdentityOperator`              |             |
+| `HomothetyOperator`             |             |
+| `DiagonalOperator`              |             |
+| `BroadcastDiagonalOperator`     | Non-square operator for broadcasting |
+| `DenseBlockDiagonalOperator`    | For dense matrix operations |
+| `IndexOperator`                 | Used for projecting skies onto time-ordered series|
+| `MoveAxisOperator`              |             |
+| `ReshapeOperator`               |             |
+| `RavelOperator`                 |             |
+| `SymmetricBandToeplitzOperator` | Methods: direct, FFT, overlap and save |
+
+: {tbl-colwidths="[30,70]"}
+
+<br>
+
+| Applied Operator          | Description |
+|---------------------------|-------------|
+| `QURotationOperator`      |             |
+| `HWPOperator`             | Ideal HWP   |
+| `CMBOperator`             | Parametrized CMB SED |
+| `DustOperator`            | Parametrized dust SED |
+| `SynchrotronOperator`     | Parametrized synchrotron SED |
+| `LinearPolarizerOperator` | Ideal linear polarizer |
+
+: {tbl-colwidths="[30,70]"}
+
+:::
 
 # Multi-level Optimizations {style="font-size: 35px; align=center;"}
 

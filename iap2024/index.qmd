@@ -164,12 +164,21 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 ## XLA simplifications
 
-:::: {.columns}
+::::: {.columns}
 
-::: {.column width="50%"}
+:::: {.column width="50%"}
 
 
-#### **Mathematical identities**
+::: {.solutionbox}
+
+:::{.solutionbox-header}
+
+ **Mathematical identities**
+
+:::
+
+:::{.solutionbox-body style="font-size: 20px;"}
+
 - $a\times 0 = a - a = 0$
 - $a - 0 = a\times 1 = a / 1 = a^1 = a$
 - $a^{-1} = 1/a$, $a^{1/2} = \sqrt{a}$
@@ -185,30 +194,59 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 :::
 
-::: {.column width="50%"}
+:::
 
-#### **Array manipulations**
+::::
 
-  - slicing
-  - reshaping
-  - broadcasting
-  - transposition
-  - bitcast
-  - copies
+:::: {.column width="50%"}
 
-#### **Ol' Digger's tricks**
+::: {.solutionbox}
 
-  - $a^2 = a \times a$, $a^3 = a \times a \times a$
-  - $a / b = a$>>$\log_2 b$ if b is a power of 2
-  - $a \mod b = a \& (b - 1)$ if b is a power of 2
+:::{.solutionbox-header}
+
+**Array manipulations**
 
 :::
 
-and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)
+:::{.solutionbox-body style="font-size: 20px;"}
+
+- slicing
+- reshaping
+- broadcasting
+- transposition
+- bitcast
+- copies
+
+:::
+
+:::
+
+
+:::{.solutionbox}
+
+:::{.solutionbox-header}
+
+**Ol' Digger's tricks**
+
+:::
+
+:::{.solutionbox-body style="font-size: 20px;"}
+
+- $a^2 = a \times a$, $a^3 = a \times a \times a$
+- $a / b = a$>>$\log_2 b$ if b is a power of 2
+- $a \mod b = a \& (b - 1)$ if b is a power of 2
+
+:::
 
 :::
 
 ::::
+
+:::::
+
+and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)
+
+---
 
 ## XLA Common Subexpression Elimination (CSE)
 

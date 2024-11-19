@@ -232,6 +232,30 @@ def rot(x, y, theta):
 
 @jax.jit
 def func(x, y, theta1, theta2):
+    x, y = rot(x, y, theta=theta1)
+    return rot(x, y, theta=theta2)
+  ```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-rot.png){fig-align="center" width="60%"}
+
+:::
+
+## FURAX Algebraic Reductions: Composition of Rotation Matrices
+
+
+```python
+import jax
+import jax.numpy as jnp
+
+def rot(x, y, theta):
+    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)
+    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)
+    return rotated_x, rotated_y
+
+@jax.jit
+def func(x, y, theta1, theta2):
     return rot(x, y, theta=theta1 + theta2)
   ```
 
@@ -269,7 +293,7 @@ def func(x, y, theta1, theta2):
 
 Given this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate:
 $$
-H = L \, R_{2\theta} \, R_{-2\phi} \, C_{\textrm{HWP}} \, R_{2\phi} \, R_{2\psi} \, P
+H = C_{\textrm{LP}} \, R_{2\theta} \, R_{-2\phi} \, C_{\textrm{HWP}} \, R_{2\phi} \, R_{2\psi} \, P
 $$
 with
 
@@ -280,7 +304,7 @@ with
 FURAX reduces this expression to:
 
 $$
-H = L \, R_{-2\theta + 4\phi + 2\psi}\, P
+H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 $$
 
 # CMB Applications {style="font-size: 35px; align=center;"}

@@ -143,7 +143,7 @@ def func_cse(theta):
 
 ::: {.fragment fragment-index=1}
 
-![Intermediate StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%"}
+![Compiled StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%"}
 
 :::
 
@@ -180,7 +180,7 @@ def func(x):
 
 ::: {.fragment fragment-index=1}
 
-![Intermediate StableHLO representation](assets/hlo/hlo-func-dce.png){fig-align="center" width="60%"}
+![Compiled StableHLO representation](assets/hlo/hlo-func-dce.png){fig-align="center" width="60%"}
 
 :::
 
@@ -193,11 +193,94 @@ def func(x):
 ![From the Python code to the GPU-native code](assets/jax-compilation-chain-with-furax.png){fig-align="center" width="120%"}
 
 
-## FURAX Algebraic Reduction: Pointing Matrix
+## FURAX Algebraic Reductions: Pointing Matrix
+
+::: {style="font-size: 20px;"}
+
+When the time-time noise covariance matrix $N$ is diagonal and $P$ is a "one-to-one" intensity projection matrix:
+
+$$
+P = 
+\begin{bmatrix}
+0 & \cdots & 0 & 1 & 0 & \cdots & 0 \\
+0 & 1 & 0 & \cdots & 0 & 0 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+1 & 0 & \cdots & 0 & 0 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+0 & 0 & \cdots & 0 & 1 & 0 & \cdots & 0 \\
+\end{bmatrix},
+$$
+the product $P^{\textrm{T}} N^{-1} P$ is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning). Each term is related to the number of times a pixel of the map has been observed.
+
+For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.
+
+By adding a **rule** for this operation, we've seen an performance improvement by more than a **factor of 10** in the forward application (WIP, currently only for $N$ scalar).
+
+:::
+
+## FURAX Algebraic Reductions: Composition of Rotation Matrices
 
 
+```python
+import jax
+import jax.numpy as jnp
 
-## FURAX Algebraic Reduction: Composition of Rotation Matrices
+def rot(x, y, theta):
+    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)
+    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)
+    return rotated_x, rotated_y
 
+@jax.jit
+def func(x, y, theta1, theta2):
+    return rot(x, y, theta=theta1 + theta2)
+  ```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-rot-furax.png){fig-align="center" width="60%"}
+
+:::
+
+## FURAX Algebraic Reductions: Composition of Rotation Matrices
+
+
+```python
+import jax
+import jax.numpy as jnp
+
+def rot(x, y, theta):
+    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)
+    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)
+    return rotated_x, rotated_y
+
+@jax.jit
+def func(x, y, theta1, theta2):
+    x, y = rot(x, y, theta=theta1)
+    return rot(x, y, theta=theta2)
+  ```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-rot.png){fig-align="center" width="60%"}
+
+:::
+
+## FURAX Algebraic Reductions: Instrument Acquisition
+
+Given this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate:
+$$
+H = L \, R_{2\theta} \, R_{-2\phi} \, C_{\textrm{HWP}} \, R_{2\phi} \, R_{2\psi} \, P
+$$
+with
+
+- $\theta$: detector angle
+- $\phi$: HWP rotation angle
+- $\psi$: telescope rotation angle
+
+FURAX reduces this expression to:
+
+$$
+H = L \, R_{-2\theta + 4\phi + 2\psi}\, P
+$$
 
 # CMB Applications {style="font-size: 35px; align=center;"}

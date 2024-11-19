@@ -487,13 +487,17 @@
 </table>
 </div>
 </section>
-<section id="furax-operators-1" class="slide level2">
+<section id="furax-operators-1" class="slide level2" style="font-size: 18px;">
 <h2>FURAX Operators</h2>
-<div style="font-size: 18px;">
+<p><br> <br></p>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="solutionbox">
+<div class="solutionbox-body" style="font-size: 17px;">
 <table class="caption-top">
 <colgroup>
-<col style="width: 30%">
-<col style="width: 70%">
+<col style="width: 71%">
+<col style="width: 28%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -548,12 +552,12 @@
 </tr>
 </tbody>
 </table>
-<p><br></p>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="solutionbox">
+<div class="solutionbox-body" style="font-size: 17px;">
 <table class="caption-top">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 70%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Applied Operator</th>
@@ -588,6 +592,8 @@
 </tbody>
 </table>
 </div>
+</div>
+</div></div>
 </section></section>
 <section>
 <section id="multi-level-optimizations" class="title-slide slide level1 center" style="font-size: 35px;">
@@ -997,6 +1003,18 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 </div>
 </div>
 </div>
+</section>
+<section id="atmosphere-decontamination-using-time-domain-component-separation-for-the-so" class="slide level2">
+<h2>Atmosphere decontamination using time-domain component separation for the SO</h2>
+<p><strong><strong>Science goal:</strong></strong> Characterise the observed atmospheric template from the recoded time-ordered data to separate the atmosphere from the sky signal we are after.</p>
+<h4 id="data-model">Data Model</h4>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>datm = A(PWV) P(wx, wy) satm + n</p>
+<p>datm : atmospheric time-ordered data recoded by our telescope A(PWV) P(wx, wy) satm atmospheric template n noise</p>
+</div></div>
+<h4 id="spectral-likelihood">Spectral likelihood</h4>
+<p>⟨𝒮spec(wx, wy, PWV ∣⃗datm)⟩= ⃗dT atm (AP) ((AP)TN−1(AP))−1 (AP)TN−1 ⃗datm</p>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">

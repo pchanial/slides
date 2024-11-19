@@ -1,0 +1,9 @@
+---
+title: "Pierre's slides"
+author: "Pierre Chanial"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+---

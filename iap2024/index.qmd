@@ -1,0 +1,203 @@
+---
+title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
+
+author:
+  - "Pierre Chanial, Wassim Kabalan, Simon Biquart"
+
+format:
+  revealjs:
+    theme: [default, css/custom.scss]
+    incremental: false   
+    transition: slide
+    background-transition: slide
+    presentation-size: max-scale
+    highlight-style: github
+    slide-number: true
+    template-partials:
+      - css/title-slide.html
+output: revealjs
+
+title-slide-attributes:
+  data-background-image: "assets/Wallpaper-datacenter-tetris.png"
+  data-background-size: fill
+  data-background-opacity: "0.2"
+
+
+logo1 : '
+<div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
+  <img src="assets/Logos/Furax_logo_transparent.png" style="width: 25%;"/>
+  <img src="assets/Logos/JaxLogo.png" style="width: 15%;"/>
+  <img src="assets/Logos/Python.png" style="width: 20%;"/>
+</div>
+<div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
+  <img src="assets/Logos/APC.png" style="width: 15%;"/>
+  <img src="assets/Logos/scipol.png" style="width: 15%;"/>
+  <img src="assets/Logos/ERC.svg" style="width: 15%;"/>
+  <img src="assets/Logos/CNRS.svg" style="width: 15%;"/>
+</div>
+'
+---
+
+## FURAX Library
+
+:::{.solutionbox}
+
+::::{.solutionbox-body style="font-size: 22px; border-radius: 10px; border: 2px solid #521463;"}
+
+- <span style="color:#521463; font-size: 28px;">**Goals**</span>: Why FURAX ?
+<br />
+<br />
+- <span style="color:#521463; font-size: 28px;">**FURAX Operators**</span>: Presentation of the FURAX building blocks: the Operators.
+<br />
+<br />
+- <span style="color:#521463; font-size: 28px;">**Optimizations**</span>: High-level algebraic reductions with FURAX.
+<br />
+<br />
+- <span style="color:#521463; font-size: 28px;">**CMB Applications**</span>: From map-making to component separation.
+::::
+
+:::
+
+
+
+# Goals {style="font-size: 35px; align=center;"}
+
+
+# FURAX Building Blocks {style="font-size: 35px; align=center;"}
+
+
+# Multi-level Optimizations {style="font-size: 35px; align=center;"}
+
+## JAX GPU Compilation Chain
+
+![From the Python code to the GPU-native code](assets/jax-compilation-chain.png){fig-align="center" width="120%"}
+
+## XLA simplifications
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+#### **Mathematical identities**
+- $a\times 0 = 0$, $a - 0 = a$
+- $a\times 1 = 1$, $a / 1 = 1$
+- $a - a = 0$
+- $-(-x) = x$
+- $(-a)(-b) = ab$
+- $ac + bc = (a+b)c$
+- $(a + c1) + (b + c2) =  a + b + (c1 + c2)$
+- $a / const = a \times (1 / const)$
+- $(a / b) / (c / d) = ad / bc$
+- $\ln e^x = x$
+- $\exp a \exp b = \exp(a+b)$
+- $a / \exp b = a \exp(-b)$
+- $a^{-1} = 1/a$, $a^{1/2} = \sqrt{a}$
+
+:::
+
+::: {.column width="50%"}
+
+#### **Array manipulations**
+
+  - slicing
+  - reshaping
+  - broadcasting
+  - transposition
+  - bitcast
+  - copies
+
+#### **Ol' Digger's tricks**
+
+  - $a^2 = a \times a$, $a^3 = a \times a \times a$
+  - $a / b = a$>>$\log_2 b$ if b is a power of 2
+  - $a \mod b = a \& (b - 1)$ if b is a power of 2
+
+:::
+
+and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)
+
+:::
+
+::::
+
+## XLA Common Subexpression Elimination (CSE)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func_cse(theta):
+    a = jnp.sin(theta)
+    b = jnp.sin(theta) + 1
+    return a + b
+ ```
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment fragment-index=1}
+
+![Intermediate StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%"}
+
+:::
+
+:::
+
+::::
+
+## Dead Code Elimination (DCE)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func(x):
+    unused = jnp.sin(x)
+    y = jnp.exp(x)
+    return y[0]
+```
+
+::: {.fragment fragment-index=2}
+
+![Full computation vs DCE](assets/hlo/bench-dce.png){fig-align="center" width="190%"}
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment fragment-index=1}
+
+![Intermediate StableHLO representation](assets/hlo/hlo-func-dce.png){fig-align="center" width="60%"}
+
+:::
+
+:::
+
+::::
+
+## JAX GPU Compilation Chain with FURAX
+
+![From the Python code to the GPU-native code](assets/jax-compilation-chain-with-furax.png){fig-align="center" width="120%"}
+
+
+## FURAX Algebraic Reduction: Pointing Matrix
+
+
+
+## FURAX Algebraic Reduction: Composition of Rotation Matrices
+
+
+# CMB Applications {style="font-size: 35px; align=center;"}

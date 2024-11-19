@@ -44,7 +44,7 @@ logo1 : '
 
 ::::{.solutionbox-body style="font-size: 22px; border-radius: 10px; border: 2px solid #521463;"}
 
-- <span style="color:#521463; font-size: 28px;">**Goals**</span>: Why FURAX ?
+- <span style="color:#521463; font-size: 28px;">**Motivations and Goals**</span>: Why FURAX ?
 <br />
 <br />
 - <span style="color:#521463; font-size: 28px;">**FURAX Operators**</span>: Presentation of the FURAX building blocks: the Operators.
@@ -60,10 +60,22 @@ logo1 : '
 
 
 
-# Goals {style="font-size: 35px; align=center;"}
+# Motivations and Goals {style="font-size: 35px; align=center;"}
 
 
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}
+
+## AbstractLinearOperator Class
+
+This class provides:
+
+| Operation   | FURAX | Comment |
+|-------------|-------|---------|
+| Addition    | `A + B` |   |
+| Composition | `A @ B` |   |
+| Multiplication by scalar | `k * A` | Returns the composition of a HomothetyOperator and A|
+| Transpose   | `A.T`  |  Through JAX autodiff, but can be overriden |
+| Inverse     | `A.I` | Unless specifically implemented, use CG but it can be configured using a context manager |
 
 
 # Multi-level Optimizations {style="font-size: 35px; align=center;"}

@@ -693,24 +693,34 @@
 <span id="cb2-2"><a></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
 <span id="cb2-3"><a></a></span>
 <span id="cb2-4"><a></a><span class="at">@jax.jit</span></span>
-<span id="cb2-5"><a></a><span class="kw">def</span> func(x):</span>
+<span id="cb2-5"><a></a><span class="kw">def</span> func_dce(x):</span>
 <span id="cb2-6"><a></a>    unused <span class="op">=</span> jnp.sin(x)</span>
 <span id="cb2-7"><a></a>    y <span class="op">=</span> jnp.exp(x)</span>
 <span id="cb2-8"><a></a>    <span class="cf">return</span> y[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="fragment" data-fragment-index="2">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="assets/hlo/bench-dce.png" style="width:190.0%"></p>
-<figcaption>Full computation vs DCE</figcaption>
-</figure>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="1">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="assets/hlo/hlo-func-dce.png" style="width:60.0%"></p>
 <figcaption>Compiled StableHLO representation</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment" data-fragment-index="2">
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">import</span> jax</span>
+<span id="cb3-2"><a></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb3-3"><a></a></span>
+<span id="cb3-4"><a></a><span class="at">@jax.jit</span></span>
+<span id="cb3-5"><a></a><span class="kw">def</span> func_full(x):</span>
+<span id="cb3-6"><a></a>    <span class="cf">return</span> jnp.exp(x)</span>
+<span id="cb3-7"><a></a></span>
+<span id="cb3-8"><a></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment" data-fragment-index="3">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/hlo/bench-dce.png" style="width:190.0%"></p>
+<figcaption>Full computation vs DCE</figcaption>
 </figure>
 </div>
 </div>
@@ -721,55 +731,8 @@
 <p><br> <br> <br> <br> <br></p>
 
 <img data-src="assets/jax-compilation-chain-with-furax.png" style="width:120.0%" class="r-stretch quarto-figure-center"><p class="caption">From the Python code to the GPU-native code</p></section>
-<section id="furax-algebraic-reductions-pointing-matrix" class="slide level2">
-<h2>FURAX Algebraic Reductions: Pointing Matrix</h2>
-<div style="font-size: 20px;">
-<p>When the time-time noise covariance matrix <span class="math inline">\(N\)</span> is diagonal and <span class="math inline">\(P\)</span> is a “one-to-one” intensity projection matrix:</p>
-<p><span class="math display">\[
-P =
-\begin{bmatrix}
-0 &amp; \cdots &amp; 0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 \\
-0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 \\
-\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
-1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 \\
-\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
-0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 \\
-\end{bmatrix},
-\]</span></p>
-<p><br> <br></p>
-<ul>
-<li><p>the product <span class="math inline">\(P^{\textrm{T}} N^{-1} P\)</span> is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning).</p></li>
-<li><p>Each term is related to the number of times a pixel of the map has been observed.</p></li>
-<li><p>For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.</p></li>
-<li><p>By adding a <strong>rule</strong> for this operation, we’ve seen an performance improvement by more than a <strong>factor of 10</strong> in the forward application (WIP, currently only for <span class="math inline">\(N\)</span> scalar).</p></li>
-</ul>
-</div>
-</section>
-<section id="furax-algebraic-reductions-composition-of-rotation-matrices" class="slide level2">
-<h2>FURAX Algebraic Reductions: Composition of Rotation Matrices</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">import</span> jax</span>
-<span id="cb3-2"><a></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
-<span id="cb3-3"><a></a></span>
-<span id="cb3-4"><a></a><span class="kw">def</span> rot(x, y, theta):</span>
-<span id="cb3-5"><a></a>    rotated_x <span class="op">=</span> x <span class="op">*</span> jnp.cos(theta) <span class="op">-</span> y <span class="op">*</span> jnp.sin(theta)</span>
-<span id="cb3-6"><a></a>    rotated_y <span class="op">=</span> x <span class="op">*</span> jnp.sin(theta) <span class="op">+</span> y <span class="op">*</span> jnp.cos(theta)</span>
-<span id="cb3-7"><a></a>    <span class="cf">return</span> rotated_x, rotated_y</span>
-<span id="cb3-8"><a></a></span>
-<span id="cb3-9"><a></a><span class="at">@jax.jit</span></span>
-<span id="cb3-10"><a></a><span class="kw">def</span> func(x, y, theta1, theta2):</span>
-<span id="cb3-11"><a></a>    x, y <span class="op">=</span> rot(x, y, theta<span class="op">=</span>theta1)</span>
-<span id="cb3-12"><a></a>    <span class="cf">return</span> rot(x, y, theta<span class="op">=</span>theta2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="fragment" data-fragment-index="1">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="assets/hlo/hlo-rot.png" style="width:60.0%"></p>
-<figcaption>Compiled StableHLO representation</figcaption>
-</figure>
-</div>
-</div>
-</section>
-<section id="furax-algebraic-reductions-composition-of-rotation-matrices-1" class="slide level2">
-<h2>FURAX Algebraic Reductions: Composition of Rotation Matrices</h2>
+<section id="furax-algebraic-reductions-composition-of-rotations" class="slide level2">
+<h2>FURAX Algebraic Reductions: Composition of Rotations</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="im">import</span> jax</span>
 <span id="cb4-2"><a></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
 <span id="cb4-3"><a></a></span>
@@ -784,10 +747,74 @@ P =
 <div class="fragment" data-fragment-index="1">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="assets/hlo/hlo-rot-furax.png" style="width:60.0%"></p>
+<p><img data-src="assets/hlo/hlo-rot-furax.png" style="width:80.0%"></p>
 <figcaption>Compiled StableHLO representation</figcaption>
 </figure>
 </div>
+</div>
+</section>
+<section id="furax-algebraic-reductions-composition-of-rotations-1" class="slide level2">
+<h2>FURAX Algebraic Reductions: Composition of Rotations</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="im">import</span> jax</span>
+<span id="cb5-2"><a></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a><span class="kw">def</span> rot(x, y, theta):</span>
+<span id="cb5-5"><a></a>    rotated_x <span class="op">=</span> x <span class="op">*</span> jnp.cos(theta) <span class="op">-</span> y <span class="op">*</span> jnp.sin(theta)</span>
+<span id="cb5-6"><a></a>    rotated_y <span class="op">=</span> x <span class="op">*</span> jnp.sin(theta) <span class="op">+</span> y <span class="op">*</span> jnp.cos(theta)</span>
+<span id="cb5-7"><a></a>    <span class="cf">return</span> rotated_x, rotated_y</span>
+<span id="cb5-8"><a></a></span>
+<span id="cb5-9"><a></a><span class="at">@jax.jit</span></span>
+<span id="cb5-10"><a></a><span class="kw">def</span> func(x, y, theta1, theta2):</span>
+<span id="cb5-11"><a></a>    x, y <span class="op">=</span> rot(x, y, theta<span class="op">=</span>theta1)</span>
+<span id="cb5-12"><a></a>    <span class="cf">return</span> rot(x, y, theta<span class="op">=</span>theta2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="fragment" data-fragment-index="1">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/hlo/hlo-rot.png" style="width:80.0%"></p>
+<figcaption>Compiled StableHLO representation</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="furax-algebraic-reductions-instrument-acquisition" class="slide level2">
+<h2>FURAX Algebraic Reductions: Instrument Acquisition</h2>
+<p><br></p>
+<p>Given this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate: <span class="math display">\[
+\mathbf{H} = \mathbf{C}_{\textrm{LP}} \, \mathbf{R}_{2\theta} \, \mathbf{R}_{-2\phi} \, \mathbf{C}_{\textrm{HWP}} \, \mathbf{R}_{2\phi} \, \mathbf{R}_{2\psi} \, \mathbf{P}
+\]</span> with</p>
+<ul>
+<li><span class="math inline">\(\theta\)</span>: detector polarization angle</li>
+<li><span class="math inline">\(\phi\)</span>: HWP rotation angle</li>
+<li><span class="math inline">\(\psi\)</span>: telescope rotation angle</li>
+</ul>
+<p>FURAX reduces this expression to:</p>
+<p><span class="math display">\[
+\mathbf{H} = \mathbf{C}_{\textrm{LP}} \, \mathbf{R}_{-2\theta + 4\phi + 2\psi}\, \mathbf{P}
+\]</span></p>
+</section>
+<section id="furax-algebraic-reductions-pointing-matrix" class="slide level2">
+<h2>FURAX Algebraic Reductions: Pointing Matrix</h2>
+<p><br></p>
+<div style="font-size: 20px;">
+<p>When the time-time noise covariance matrix <span class="math inline">\(\mathbf{N}\)</span> is diagonal and <span class="math inline">\(\mathbf{P}\)</span> is a “one-to-one” intensity projection matrix:</p>
+<p><span class="math display">\[
+\mathbf{P} =
+\begin{bmatrix}
+0 &amp; \cdots &amp; 0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 \\
+\end{bmatrix},
+\]</span></p>
+<p><br> <br></p>
+<ul>
+<li><p>the product <span class="math inline">\(\mathbf{P}^\top \mathbf{N}^{-1} \mathbf{P}\)</span> is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning).</p></li>
+<li><p>Each term is related to the number of noise-weighted times a pixel of the map has been observed.</p></li>
+<li><p>For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.</p></li>
+<li><p>By adding a <strong>rule</strong> for this operation, we’ve seen an performance improvement by more than a <strong>factor of 10</strong> in the forward application (WIP, currently only for <span class="math inline">\(\mathbf{N}\)</span> scalar).</p></li>
+</ul>
 </div>
 </section>
 <section id="furax-algebraic-reductions-block-assembly" class="slide level2">
@@ -822,45 +849,33 @@ P =
 </table>
 </div>
 <p><br> <br></p>
-<h4 id="practical-use-case-given-two-observations">Practical use case: Given two observations,</h4>
+<h4 id="practical-use-case">Practical use case:</h4>
+<p>Given two observations</p>
 <p><span class="math display">\[
-P =
+\mathbf{P} =
 \begin{bmatrix}
-P_1 \\
-P_2
+\mathbf{P}_1 \\
+\mathbf{P}_2
 \end{bmatrix}, \quad
-N^{-1} =
+\mathbf{N}^{-1} =
 \begin{bmatrix}
-N_1^{-1} &amp; 0 \\
-0 &amp; N_2^{-1}
+\mathbf{N}_1^{-1} &amp; 0 \\
+0 &amp; \mathbf{N}_2^{-1}
 \end{bmatrix},
 \]</span></p>
-<p>The combination results in <span class="math display">\[
-P^T N^{-1} P = P_1^T N_1^{-1} P_1 + P_2^T N_2^{-1} P_2.
-\]</span></p>
-</section>
-<section id="furax-algebraic-reductions-instrument-acquisition" class="slide level2">
-<h2>FURAX Algebraic Reductions: Instrument Acquisition</h2>
-<p>Given this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate: <span class="math display">\[
-H = C_{\textrm{LP}} \, R_{2\theta} \, R_{-2\phi} \, C_{\textrm{HWP}} \, R_{2\phi} \, R_{2\psi} \, P
-\]</span> with</p>
-<ul>
-<li><span class="math inline">\(\theta\)</span>: detector angle</li>
-<li><span class="math inline">\(\phi\)</span>: HWP rotation angle</li>
-<li><span class="math inline">\(\psi\)</span>: telescope rotation angle</li>
-</ul>
-<p>FURAX reduces this expression to:</p>
-<p><span class="math display">\[
-H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
+<p>The combination is reduced to <span class="math display">\[
+\mathbf{P}^\top \mathbf{N}^{-1} \mathbf{P} = \mathbf{P}_1^\top \mathbf{N}_1^{-1} \mathbf{P}_1^{\,} + \mathbf{P}_2^\top \mathbf{N}_2^{-1} \mathbf{P}_2^{\,}.
 \]</span></p>
 </section></section>
 <section>
 <section id="cmb-applications" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
 <h1>CMB Applications</h1>
-
+<div style="color: gray; font-size: 16px">
+<p><br> <br> <br> <br> Credits: Scipol Ph.D students</p>
+</div>
 </section>
-<section id="component-seperation" class="slide level2" style="font-size: 22px;">
-<h2>Component Seperation</h2>
+<section id="component-separation" class="slide level2" style="font-size: 22px;">
+<h2>Component Separation</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
@@ -909,7 +924,7 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 <div class="fragment" data-fragment-index="3">
 <div class="solutionbox">
 <div class="solutionbox-header" style="font-size: 22px;">
-<p><strong>Component seperation methods</strong></p>
+<p><strong>Component separation methods</strong></p>
 </div>
 <div class="solutionbox-body" style="font-size: 2Opx;">
 <ul>
@@ -940,6 +955,9 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Wassim Kabalan</p>
+</div>
 </section>
 <section id="on-going-development-of-parametric-component-separation-within-the-furax-framework" class="slide level2">
 <h2>On-going development of parametric component separation within the FURAX framework</h2>
@@ -947,11 +965,11 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 <div class="column" style="width:50%;">
 <h4 id="does-everything-fgbuster-does-but-better">Does everything fgbuster does but “better”</h4>
 <ul>
-<li>Uses the FURAX operators to represent linear algebra to efficient computing</li>
-<li>Is written in JAX, hardware accelerated and have easy access to gradients</li>
+<li>Uses FURAX linear algebra operators to efficiently represent the mixing matrix</li>
+<li>Is written in JAX, is hardware accelerated</li>
+<li>Provides easy access to gradients</li>
 </ul>
 <div class="fragment" data-fragment-index="1">
-<p><br></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="assets/CMB/Log_Like_bench.png" class="nostretch quarto-figure quarto-figure-center" style="border: 2px solid #000000;;width:80.0%"></p>
@@ -972,52 +990,59 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 </div>
 </div>
 </div></div>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Wassim Kabalan</p>
+</div>
 </section>
 <section id="on-going-development-of-parametric-component-separation-within-the-furax-framework-1" class="slide level2" style="font-size: 22px;">
 <h2>On-going development of parametric component separation within the FURAX framework</h2>
+<p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="1">
 <!-- -->
 <h4 id="creating-a-mixing-matrix-operator-for-sed-evaluation">Creating a Mixing Matrix Operator for SED evaluation</h4>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="im">from</span> furax.seds <span class="im">import</span> CMBOperator,DustOperator,<span class="op">\</span></span>
-<span id="cb5-2"><a></a>                       SynchrotronOperator</span>
-<span id="cb5-3"><a></a></span>
-<span id="cb5-4"><a></a></span>
-<span id="cb5-5"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>
-<span id="cb5-6"><a></a>  cmb <span class="op">=</span> CMBOperator(nu, in_structure)</span>
-<span id="cb5-7"><a></a>  dust <span class="op">=</span> DustOperator(nu , TEMP_D , BETA_D)</span>
-<span id="cb5-8"><a></a>  synchrotron <span class="op">=</span> SynchrotronOperator(nu , BETA_S)</span>
-<span id="cb5-9"><a></a></span>
-<span id="cb5-10"><a></a>  sed <span class="op">=</span> BlockDiagonalOperator({</span>
-<span id="cb5-11"><a></a>          <span class="st">'cmb'</span>: cmb,</span>
-<span id="cb5-12"><a></a>          <span class="st">'dust'</span>: dust,</span>
-<span id="cb5-13"><a></a>          <span class="st">'synchrotron'</span>: synchrotron</span>
-<span id="cb5-14"><a></a>      })</span>
-<span id="cb5-15"><a></a>  <span class="cf">return</span> sed(s)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a><span class="im">from</span> furax.seds <span class="im">import</span> <span class="op">\</span></span>
+<span id="cb6-2"><a></a>  CMBOperator,DustOperator, SynchrotronOperator</span>
+<span id="cb6-3"><a></a></span>
+<span id="cb6-4"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>
+<span id="cb6-5"><a></a>  cmb <span class="op">=</span> CMBOperator(nu, in_structure)</span>
+<span id="cb6-6"><a></a>  dust <span class="op">=</span> DustOperator(nu , TEMP_D , BETA_D)</span>
+<span id="cb6-7"><a></a>  synchrotron <span class="op">=</span> SynchrotronOperator(nu , BETA_S)</span>
+<span id="cb6-8"><a></a></span>
+<span id="cb6-9"><a></a>  mixed_sed <span class="op">=</span> BlockRowOperator({</span>
+<span id="cb6-10"><a></a>          <span class="st">'cmb'</span>: cmb,</span>
+<span id="cb6-11"><a></a>          <span class="st">'dust'</span>: dust,</span>
+<span id="cb6-12"><a></a>          <span class="st">'synchrotron'</span>: synchrotron,</span>
+<span id="cb6-13"><a></a>      })</span>
+<span id="cb6-14"><a></a>  <span class="cf">return</span> mixed_sed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="2">
 <!-- -->
 <h4 id="trivial-construction-of-a-spectral-likelihood-functions">Trivial construction of a spectral likelihood functions</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a><span class="at">@jax.jit</span></span>
-<span id="cb6-2"><a></a><span class="kw">def</span> negative_log_prob(params, d):</span>
-<span id="cb6-3"><a></a>  A <span class="op">=</span> make_A(params[<span class="st">'TEMP_D'</span>], </span>
-<span id="cb6-4"><a></a>             params[<span class="st">'BETA_D'</span>], </span>
-<span id="cb6-5"><a></a>             params[<span class="st">'BETA_S'</span>])</span>
-<span id="cb6-6"><a></a></span>
-<span id="cb6-7"><a></a>  x <span class="op">=</span> (A.T <span class="op">@</span> invN)(d)</span>
-<span id="cb6-8"><a></a>  l <span class="op">=</span> jax.tree.<span class="bu">map</span>(<span class="kw">lambda</span> a, b: a <span class="op">@</span> b, x, (A.T <span class="op">@</span> invN <span class="op">@</span> A).I(x))</span>
-<span id="cb6-9"><a></a>  summed_log_prob <span class="op">=</span> jax.tree.<span class="bu">reduce</span>(operator.add, l)</span>
-<span id="cb6-10"><a></a></span>
-<span id="cb6-11"><a></a>  <span class="cf">return</span> <span class="op">-</span>summed_log_prob </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a></a><span class="im">import</span> jax</span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a><span class="at">@jax.jit</span></span>
+<span id="cb7-4"><a></a><span class="kw">def</span> negative_log_prob(params, d):</span>
+<span id="cb7-5"><a></a>  A <span class="op">=</span> make_A(params[<span class="st">'TEMP_D'</span>], </span>
+<span id="cb7-6"><a></a>             params[<span class="st">'BETA_D'</span>], </span>
+<span id="cb7-7"><a></a>             params[<span class="st">'BETA_S'</span>])</span>
+<span id="cb7-8"><a></a></span>
+<span id="cb7-9"><a></a>  x <span class="op">=</span> (A.T <span class="op">@</span> invN)(d)</span>
+<span id="cb7-10"><a></a>  l <span class="op">=</span> jax.tree.<span class="bu">map</span>(<span class="kw">lambda</span> a, b: a <span class="op">@</span> b, x, (A.T <span class="op">@</span> invN <span class="op">@</span> A).I(x))<span class="op">\</span></span>
+<span id="cb7-11"><a></a>                       S</span>
+<span id="cb7-12"><a></a>  summed_log_prob <span class="op">=</span> jax.tree.<span class="bu">reduce</span>(operator.add, l)</span>
+<span id="cb7-13"><a></a></span>
+<span id="cb7-14"><a></a>  <span class="cf">return</span> <span class="op">-</span>summed_log_prob</span>
+<span id="cb7-15"><a></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
-<p><br> <br></p>
+<p><br></p>
 <div class="fragment" data-fragment-index="3">
 <div class="solutionbox">
 <div class="solutionbox-header" style="font-size: 22px;">
-<p>Easy to evaluate and extended</p>
+<p>Easy to evaluate and extend</p>
 </div>
 <div class="solutionbox-body" style="font-size: 20px;">
 <ul>
@@ -1027,38 +1052,25 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 </div>
 </div>
 </div>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Wassim Kabalan</p>
+</div>
 </section>
-<section id="atmosphere-decontamination-using-time-domain-component-separation-for-so" class="slide level2" style="font-size: 18px;">
-<h2>Atmosphere Decontamination Using Time-Domain Component Separation for SO</h2>
-<h4 id="science-goal">Science Goal</h4>
-<p>Characterize the observed atmospheric template from the recorded time-ordered data to separate the atmosphere from the sky signal we are after.</p>
+<section id="atmosphere-decontamination-using-time-domain-component-separation" class="slide level2" style="font-size: 20px;">
+<h2>Atmosphere Decontamination Using Time-Domain Component Separation</h2>
+<h3 id="science-goal">Science Goal</h3>
+<p>For the Simons Observatory, characterize the observed atmospheric template from the recorded time-ordered data to separate the atmosphere from the sky signal we are after.</p>
 <div class="columns">
 <div class="column" style="width:40%;">
-<h4 id="data-model">Data Model</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/atm/atm-template.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+<h3 id="data-model">Data Model</h3>
 <p><span class="math display">\[
-\boxed{
-\vec{d}_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
-}
+d_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
 \]</span></p>
-<ul>
-<li><p><span class="math inline">\(\vec{d}_{\text{atm}}\)</span>: Atmospheric time-ordered data recorded by our telescope.</p></li>
-<li><p><span class="math inline">\(\mathbf{A}\)</span>: Mixing matrix. <span class="math display">\[
-\mathbf{A} =
-\begin{bmatrix}
-  a(\text{PWV}_{1}) &amp; 0 \\
-  0 &amp; a(\text{PWV}_{2})
-\end{bmatrix}
-\]</span></p></li>
-<li><p><span class="math inline">\(\mathbf{P}\)</span>: Pointing matrix. <span class="math display">\[
-\mathbf{P} =
-\begin{bmatrix}
-  P_{11} &amp; P_{12} \\
-  P_{21} &amp; P_{22}
-\end{bmatrix}
-\]</span></p></li>
-<li><p><span class="math inline">\(s_{\text{atm}}\)</span>: Atmospheric template.</p></li>
-<li><p><span class="math inline">\(n\)</span>: Noise.</p></li>
-</ul>
 </div><div class="column" style="width:60%;">
 <div class="solutionbox">
 <div class="solutionbox-header" style="font-size: 20px;">
@@ -1072,65 +1084,79 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 </ul>
 </div>
 </div>
+<ul>
+<li><p>Atmospheric time-ordered data recorded by our telescope at two frequencies: <span class="math inline">\(d_{\text{atm}}\)</span></p></li>
+<li><p>Mixing matrix <span class="math inline">\(\mathbf{A} =
+\begin{bmatrix}
+  a(\text{PWV}_{1}) &amp; 0 \\
+  0 &amp; a(\text{PWV}_{2})
+\end{bmatrix}\)</span></p></li>
+<li><p>Pointing matrix <span class="math inline">\(\mathbf{P} =
+\begin{bmatrix}
+  P_{11} &amp; P_{12} \\
+  P_{21} &amp; P_{22}
+\end{bmatrix}\)</span></p></li>
+<li><p>Atmospheric template: <span class="math inline">\(s_{\text{atm}}\)</span></p></li>
+<li><p>Noise: <span class="math inline">\(n\)</span>, of covariance matrix <span class="math inline">\(\mathbf{N} =
+\begin{bmatrix}
+  \sigma_{1}^{2} &amp; 0 \\
+  0 &amp; \sigma_{2}^{2}
+\end{bmatrix}\)</span></p></li>
+</ul>
+</div></div>
 <h3 id="spectral-likelihood">Spectral Likelihood</h3>
 <p><span class="math display">\[
 \boxed{
-\langle \delta \mathcal{S} \text{spec}(w_x, w_y, \text{PWV} \mid \vec{d}_{\text{atm}}) \rangle
-= \vec{d}_{\text{atm}}^\top (\mathbf{AP})
-\Big( (\mathbf{AP})^\top \mathbf{N}^{-1} (\mathbf{AP}) \Big)^{-1}
-(\mathbf{AP})^\top \mathbf{N}^{-1} \vec{d}_{\text{atm}}
+\langle \delta \mathcal{S}_\text{spec}(w_x, w_y, \text{PWV} \mid \vec{d}_{\text{atm}}) \rangle
+= \vec{d}_{\text{atm}}^\top \cdot \mathbf{AP}
+\Big[ (\mathbf{AP})^\top \mathbf{N}^{-1} (\mathbf{AP}) \Big]^{-1}
+(\mathbf{AP})^\top \mathbf{N}^{-1} d_{\text{atm}}
 }
 \]</span></p>
-<p>Where:</p>
-<ul>
-<li><span class="math inline">\(\mathbf{A}\)</span>: Mixing matrix.</li>
-<li><span class="math inline">\(\mathbf{P}\)</span>: Pointing matrix.</li>
-<li><span class="math inline">\(\mathbf{N}\)</span>: Noise covariance matrix. <span class="math display">\[
-\mathbf{N} =
-\begin{bmatrix}
-\sigma_{1}^{2} &amp; 0 \\
-0 &amp; \sigma_{2}^{2}
-\end{bmatrix}
-\]</span></li>
-</ul>
-</div></div>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Amalia Villarrubia Aguilar</p>
+</div>
 </section>
-<section id="atmosphere-decontamination-using-time-domain-component-separation-for-so-1" class="slide level2" style="font-size: 25px;">
-<h2>Atmosphere Decontamination Using Time-Domain Component Separation for SO</h2>
-<h4 id="spectral-likelihood-computation-using-furax">Spectral likelihood computation using FURAX:</h4>
-<div class="sourceCode" id="cb7" data-code-line-numbers="|17-21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a></a><span class="kw">def</span> average_spectral_likelihood_noise(d_atm, w_vec, PWV):</span>
-<span id="cb7-2"><a></a>    <span class="co"># POINTING matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
-<span id="cb7-3"><a></a>    P_single_freq <span class="op">=</span> pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)</span>
-<span id="cb7-4"><a></a>    P <span class="op">=</span> BlockColumnOperator({‘<span class="dv">93</span>’: P_single_freq, ‘<span class="dv">145</span>’: P_single_freq})</span>
-<span id="cb7-5"><a></a>    <span class="co"># MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))</span></span>
-<span id="cb7-6"><a></a>    A_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
-<span id="cb7-7"><a></a>    A_93 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_93)<span class="op">/</span>atm_emission(PWV, mu_93), _in_structure<span class="op">=</span>A_block_structure)</span>
-<span id="cb7-8"><a></a>    A_145 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_145)<span class="op">/</span>atm_emission(PWV, mu_93), _in_structure<span class="op">=</span>A_block_structure)</span>
-<span id="cb7-9"><a></a>    A <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: A_93, ‘<span class="dv">145</span>’: A_145})</span>
-<span id="cb7-10"><a></a>    <span class="co"># COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
-<span id="cb7-11"><a></a>    C <span class="op">=</span> A <span class="op">@</span> P</span>
-<span id="cb7-12"><a></a>    <span class="co"># NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))</span></span>
-<span id="cb7-13"><a></a>    N_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
-<span id="cb7-14"><a></a>    N_93 <span class="op">=</span> HomothetyOperator(noise_variance_93, _in_structure<span class="op">=</span>N_block_structure)</span>
-<span id="cb7-15"><a></a>    N_145 <span class="op">=</span> HomothetyOperator(noise_variance_145, _in_structure<span class="op">=</span>N_block_structure)</span>
-<span id="cb7-16"><a></a>    N <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: N_93, ‘<span class="dv">145</span>’: N_145})</span>
-<span id="cb7-17"><a></a>    <span class="co"># Spectral likelihood computation:</span></span>
-<span id="cb7-18"><a></a>    core_op <span class="op">=</span> (C.T <span class="op">@</span> N.I <span class="op">@</span> C).I</span>
-<span id="cb7-19"><a></a>    full_op <span class="op">=</span> N.I <span class="op">@</span> C <span class="op">@</span> core_op <span class="op">@</span> C.T <span class="op">@</span> N.I</span>
-<span id="cb7-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesIPyTree(d_atm) <span class="op">@</span> StokesIPyTree(full_op(d_atm))</span>
-<span id="cb7-21"><a></a>    <span class="cf">return</span> S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="atmosphere-decontamination-using-time-domain-component-separation-1" class="slide level2">
+<h2>Atmosphere Decontamination Using Time-Domain Component Separation</h2>
+<h3 id="spectral-likelihood-computation-using-furax">Spectral likelihood computation using FURAX</h3>
+<div class="sourceCode" id="cb8" data-code-line-numbers="|17-21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a><span class="kw">def</span> average_spectral_likelihood_noise(d_atm, w_vec, PWV):</span>
+<span id="cb8-2"><a></a>    <span class="co"># POINTING matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
+<span id="cb8-3"><a></a>    P_single_freq <span class="op">=</span> pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)</span>
+<span id="cb8-4"><a></a>    P <span class="op">=</span> BlockColumnOperator({‘<span class="dv">93</span>’: P_single_freq, ‘<span class="dv">145</span>’: P_single_freq})</span>
+<span id="cb8-5"><a></a>    <span class="co"># MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))</span></span>
+<span id="cb8-6"><a></a>    A_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb8-7"><a></a>    A_93 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_93)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
+<span id="cb8-8"><a></a>    A_145 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_145)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
+<span id="cb8-9"><a></a>    A <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: A_93, ‘<span class="dv">145</span>’: A_145})</span>
+<span id="cb8-10"><a></a>    <span class="co"># COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
+<span id="cb8-11"><a></a>    C <span class="op">=</span> A <span class="op">@</span> P</span>
+<span id="cb8-12"><a></a>    <span class="co"># NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))</span></span>
+<span id="cb8-13"><a></a>    N_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb8-14"><a></a>    N_93 <span class="op">=</span> HomothetyOperator(noise_variance_93, in_structure<span class="op">=</span>N_block_structure)</span>
+<span id="cb8-15"><a></a>    N_145 <span class="op">=</span> HomothetyOperator(noise_variance_145, in_structure<span class="op">=</span>N_block_structure)</span>
+<span id="cb8-16"><a></a>    N <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: N_93, ‘<span class="dv">145</span>’: N_145})</span>
+<span id="cb8-17"><a></a>    <span class="co"># Spectral likelihood computation:</span></span>
+<span id="cb8-18"><a></a>    core_op <span class="op">=</span> (C.T <span class="op">@</span> N.I <span class="op">@</span> C).I</span>
+<span id="cb8-19"><a></a>    full_op <span class="op">=</span> N.I <span class="op">@</span> C <span class="op">@</span> core_op <span class="op">@</span> C.T <span class="op">@</span> N.I</span>
+<span id="cb8-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesIPyTree(d_atm) <span class="op">@</span> StokesIPyTree(full_op(d_atm))</span>
+<span id="cb8-21"><a></a>    <span class="cf">return</span> S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="solutionbox">
 <div class="solutionbox-body" style="font-size: 18px;">
 <ul>
-<li>Easily extendible</li>
+<li>Easily extensible</li>
 <li>Easy access to gradients</li>
 </ul>
 </div>
 </div>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Amalia Villarrubia Aguilar</p>
+</div>
 </section>
-<section id="atmosphere-decontamination-using-time-domain-component-separation-for-so-2" class="slide level2" style="font-size: 25px;">
-<h2>Atmosphere Decontamination Using Time-Domain Component Separation for SO</h2>
-<h4 id="spectral-likelihood-minimization">Spectral likelihood minimization</h4>
+<section id="atmosphere-decontamination-using-time-domain-component-separation-2" class="slide level2" style="font-size: 20px;">
+<h2>Atmosphere Decontamination Using Time-Domain Component Separation</h2>
+<p><br></p>
+<h3 id="spectral-likelihood-minimization">Spectral likelihood minimization</h3>
 <div class="columns">
 <div class="column" style="width:60%;">
 <div class="quarto-figure quarto-figure-center" style="border: 2px solid #000000;">
@@ -1146,12 +1172,14 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 <p><strong>Gridding process</strong></p>
 </div>
 <div class="solutionbox-body" style="font-size: 18px;">
-<p>➜ This spectral likelihood is minimised through gridding: we compute<br>
-<span class="math inline">\(\langle \delta \mathcal{S} \text{spec}(w_x, w_y \mid \text{PWV}_{\text{sim}}) \rangle\)</span><br>
+<p>➜ This spectral likelihood is minimised through gridding: we compute <span class="math inline">\(\langle \delta \mathcal{S}_\text{spec}(w_x, w_y \mid \text{PWV}_{\text{sim}}) \rangle\)</span><br>
 for 22,500 different combinations of <span class="math inline">\((w_x, w_y)\)</span>.</p>
 </div>
 </div>
 </div></div>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Amalia Villarrubia Aguilar</p>
+</div>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">

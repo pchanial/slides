@@ -25,7 +25,7 @@
     "href": "iap2024/index.html#jax-gpu-compilation-chain",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "JAX GPU Compilation Chain",
-    "text": "JAX GPU Compilation Chain\n\nFrom the Python code to the GPU-native code"
+    "text": "JAX GPU Compilation Chain\n    \n\nFrom the Python code to the GPU-native code"
   },
   {
     "objectID": "iap2024/index.html#xla-simplifications",

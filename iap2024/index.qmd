@@ -423,9 +423,8 @@ def func(x, y, theta1, theta2):
 <br>
 <br>
 
-#### Practical usage: combining observations
+#### Practical use case: Given two observations,
 
-Given two observations
 $$
 P =
 \begin{bmatrix}
@@ -439,7 +438,7 @@ N_1^{-1} & 0 \\
 \end{bmatrix},
 $$
 
-The combining results in
+The combination results in
 $$
 P^T N^{-1} P = P_1^T N_1^{-1} P_1 + P_2^T N_2^{-1} P_2.
 $$

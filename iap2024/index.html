@@ -1028,17 +1028,130 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 </div>
 </div>
 </section>
-<section id="atmosphere-decontamination-using-time-domain-component-separation-for-the-so" class="slide level2">
-<h2>Atmosphere decontamination using time-domain component separation for the SO</h2>
-<p><strong><strong>Science goal:</strong></strong> Characterise the observed atmospheric template from the recoded time-ordered data to separate the atmosphere from the sky signal we are after.</p>
-<h4 id="data-model">Data Model</h4>
+<section id="atmosphere-decontamination-using-time-domain-component-separation-for-so" class="slide level2" style="font-size: 18px;">
+<h2>Atmosphere Decontamination Using Time-Domain Component Separation for SO</h2>
+<h4 id="science-goal">Science Goal</h4>
+<p>Characterize the observed atmospheric template from the recorded time-ordered data to separate the atmosphere from the sky signal we are after.</p>
 <div class="columns">
-<div class="column" style="width:50%;">
-<p>datm = A(PWV) P(wx, wy) satm + n</p>
-<p>datm : atmospheric time-ordered data recoded by our telescope A(PWV) P(wx, wy) satm atmospheric template n noise</p>
+<div class="column" style="width:40%;">
+<h4 id="data-model">Data Model</h4>
+<p><span class="math display">\[
+\boxed{
+\vec{d}_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
+}
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\vec{d}_{\text{atm}}\)</span>: Atmospheric time-ordered data recorded by our telescope.</p></li>
+<li><p><span class="math inline">\(\mathbf{A}\)</span>: Mixing matrix. <span class="math display">\[
+\mathbf{A} =
+\begin{bmatrix}
+  a(\text{PWV}_{1}) &amp; 0 \\
+  0 &amp; a(\text{PWV}_{2})
+\end{bmatrix}
+\]</span></p></li>
+<li><p><span class="math inline">\(\mathbf{P}\)</span>: Pointing matrix. <span class="math display">\[
+\mathbf{P} =
+\begin{bmatrix}
+  P_{11} &amp; P_{12} \\
+  P_{21} &amp; P_{22}
+\end{bmatrix}
+\]</span></p></li>
+<li><p><span class="math inline">\(s_{\text{atm}}\)</span>: Atmospheric template.</p></li>
+<li><p><span class="math inline">\(n\)</span>: Noise.</p></li>
+</ul>
+</div><div class="column" style="width:60%;">
+<div class="solutionbox">
+<div class="solutionbox-header" style="font-size: 20px;">
+<p><strong>Model Parameters</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 18px;">
+<ul>
+<li><strong>Wind velocity</strong>: <span class="math inline">\(\vec{w} = (w_x, w_y)\)</span></li>
+<li><strong>Precipitable Water Vapour (PWV)</strong>: ~Amplitude of atmospheric fluctuations.</li>
+<li>Estimate parameters by minimizing the spectral likelihood.</li>
+</ul>
+</div>
+</div>
+<h3 id="spectral-likelihood">Spectral Likelihood</h3>
+<p><span class="math display">\[
+\boxed{
+\langle \delta \mathcal{S} \text{spec}(w_x, w_y, \text{PWV} \mid \vec{d}_{\text{atm}}) \rangle
+= \vec{d}_{\text{atm}}^\top (\mathbf{AP})
+\Big( (\mathbf{AP})^\top \mathbf{N}^{-1} (\mathbf{AP}) \Big)^{-1}
+(\mathbf{AP})^\top \mathbf{N}^{-1} \vec{d}_{\text{atm}}
+}
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li><span class="math inline">\(\mathbf{A}\)</span>: Mixing matrix.</li>
+<li><span class="math inline">\(\mathbf{P}\)</span>: Pointing matrix.</li>
+<li><span class="math inline">\(\mathbf{N}\)</span>: Noise covariance matrix. <span class="math display">\[
+\mathbf{N} =
+\begin{bmatrix}
+\sigma_{1}^{2} &amp; 0 \\
+0 &amp; \sigma_{2}^{2}
+\end{bmatrix}
+\]</span></li>
+</ul>
 </div></div>
-<h4 id="spectral-likelihood">Spectral likelihood</h4>
-<p>⟨𝒮spec(wx, wy, PWV ∣⃗datm)⟩= ⃗dT atm (AP) ((AP)TN−1(AP))−1 (AP)TN−1 ⃗datm</p>
+</section>
+<section id="atmosphere-decontamination-using-time-domain-component-separation-for-so-1" class="slide level2" style="font-size: 25px;">
+<h2>Atmosphere Decontamination Using Time-Domain Component Separation for SO</h2>
+<h4 id="spectral-likelihood-computation-using-furax">Spectral likelihood computation using FURAX:</h4>
+<div class="sourceCode" id="cb7" data-code-line-numbers="|17-21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a></a><span class="kw">def</span> average_spectral_likelihood_noise(d_atm, w_vec, PWV):</span>
+<span id="cb7-2"><a></a>    <span class="co"># POINTING matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
+<span id="cb7-3"><a></a>    P_single_freq <span class="op">=</span> pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)</span>
+<span id="cb7-4"><a></a>    P <span class="op">=</span> BlockColumnOperator({‘<span class="dv">93</span>’: P_single_freq, ‘<span class="dv">145</span>’: P_single_freq})</span>
+<span id="cb7-5"><a></a>    <span class="co"># MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))</span></span>
+<span id="cb7-6"><a></a>    A_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb7-7"><a></a>    A_93 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_93)<span class="op">/</span>atm_emission(PWV, mu_93), _in_structure<span class="op">=</span>A_block_structure)</span>
+<span id="cb7-8"><a></a>    A_145 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_145)<span class="op">/</span>atm_emission(PWV, mu_93), _in_structure<span class="op">=</span>A_block_structure)</span>
+<span id="cb7-9"><a></a>    A <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: A_93, ‘<span class="dv">145</span>’: A_145})</span>
+<span id="cb7-10"><a></a>    <span class="co"># COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
+<span id="cb7-11"><a></a>    C <span class="op">=</span> A <span class="op">@</span> P</span>
+<span id="cb7-12"><a></a>    <span class="co"># NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))</span></span>
+<span id="cb7-13"><a></a>    N_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb7-14"><a></a>    N_93 <span class="op">=</span> HomothetyOperator(noise_variance_93, _in_structure<span class="op">=</span>N_block_structure)</span>
+<span id="cb7-15"><a></a>    N_145 <span class="op">=</span> HomothetyOperator(noise_variance_145, _in_structure<span class="op">=</span>N_block_structure)</span>
+<span id="cb7-16"><a></a>    N <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: N_93, ‘<span class="dv">145</span>’: N_145})</span>
+<span id="cb7-17"><a></a>    <span class="co"># Spectral likelihood computation:</span></span>
+<span id="cb7-18"><a></a>    core_op <span class="op">=</span> (C.T <span class="op">@</span> N.I <span class="op">@</span> C).I</span>
+<span id="cb7-19"><a></a>    full_op <span class="op">=</span> N.I <span class="op">@</span> C <span class="op">@</span> core_op <span class="op">@</span> C.T <span class="op">@</span> N.I</span>
+<span id="cb7-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesIPyTree(d_atm) <span class="op">@</span> StokesIPyTree(full_op(d_atm))</span>
+<span id="cb7-21"><a></a>    <span class="cf">return</span> S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="solutionbox">
+<div class="solutionbox-body" style="font-size: 18px;">
+<ul>
+<li>Easily extendible</li>
+<li>Easy access to gradients</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="atmosphere-decontamination-using-time-domain-component-separation-for-so-2" class="slide level2" style="font-size: 25px;">
+<h2>Atmosphere Decontamination Using Time-Domain Component Separation for SO</h2>
+<h4 id="spectral-likelihood-minimization">Spectral likelihood minimization</h4>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center" style="border: 2px solid #000000;">
+<figure>
+<p><img data-src="assets/CMB/Spec-likelihood-gridding.png" class="" style="width:100.0%"></p>
+<figcaption>Spectral likelihood gridding</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<p><br> <br></p>
+<div class="solutionbox">
+<div class="solutionbox-header" style="font-size: 20px;">
+<p><strong>Gridding process</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 18px;">
+<p>➜ This spectral likelihood is minimised through gridding: we compute<br>
+<span class="math inline">\(\langle \delta \mathcal{S} \text{spec}(w_x, w_y \mid \text{PWV}_{\text{sim}}) \rangle\)</span><br>
+for 22,500 different combinations of <span class="math inline">\((w_x, w_y)\)</span>.</p>
+</div>
+</div>
+</div></div>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">

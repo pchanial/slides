@@ -265,30 +265,6 @@ def func(x, y, theta1, theta2):
 
 :::
 
-## FURAX Algebraic Reductions: Composition of Rotation Matrices
-
-
-```python
-import jax
-import jax.numpy as jnp
-
-def rot(x, y, theta):
-    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)
-    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)
-    return rotated_x, rotated_y
-
-@jax.jit
-def func(x, y, theta1, theta2):
-    x, y = rot(x, y, theta=theta1)
-    return rot(x, y, theta=theta2)
-  ```
-
-::: {.fragment fragment-index=1}
-
-![Compiled StableHLO representation](assets/hlo/hlo-rot.png){fig-align="center" width="60%"}
-
-:::
-
 ## FURAX Algebraic Reductions: Instrument Acquisition
 
 Given this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate:

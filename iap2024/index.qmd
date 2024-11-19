@@ -81,7 +81,7 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | Composition | `A @ B` |   |
 | Multiplication by scalar | `k * A` | Returns the composition of a HomothetyOperator and A|
 | Transpose   | `A.T`  |  Through JAX autodiff, but can be overriden |
-| Inverse     | `A.I` | By default, use CG but it can be overriden or configured using a context manager |
+| Inverse     | `A.I` | By default, the CG solver is used, but it can be overriden or configured using a context manager |
 | Block Assembly | `BlockColumnOperator([A, B])` `BlockDiagonalOperator([A, B])` `BlockRowOperator([A, B])` | Handle any PyTree of Operators: `Block*Operator({'a': A, 'b': B})`|
 | Flattened dense matrix | `A.as_matrix()` | |
 | Algebraic reduction | `A.reduce()` | |
@@ -110,7 +110,7 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `DiagonalOperator`              |             |
 | `BroadcastDiagonalOperator`     | Non-square operator for broadcasting |
 | `TensorOperator`    | For dense matrix operations |
-| `IndexOperator`                 | Used for projecting skies onto time-ordered series|
+| `IndexOperator`                 | Can be used for projecting skies onto time-ordered series|
 | `MoveAxisOperator`              |             |
 | `ReshapeOperator`               |             |
 | `RavelOperator`                 |             |
@@ -163,6 +163,8 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 ![From the Python code to the GPU-native code](assets/jax-compilation-chain.png){.nostrech fig-align="center" width="100%"}
 
 ## XLA simplifications
+
+<br>
 
 ::::: {.columns}
 

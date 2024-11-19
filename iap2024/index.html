@@ -609,7 +609,11 @@
 <h2>XLA simplifications</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h4 id="mathematical-identities"><strong>Mathematical identities</strong></h4>
+<div class="solutionbox">
+<div class="solutionbox-header">
+<p><strong>Mathematical identities</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 20px;">
 <ul>
 <li><span class="math inline">\(a\times 0 = a - a = 0\)</span></li>
 <li><span class="math inline">\(a - 0 = a\times 1 = a / 1 = a^1 = a\)</span></li>
@@ -624,8 +628,14 @@
 <li><span class="math inline">\(\exp a \exp b = \exp(a+b)\)</span></li>
 <li><span class="math inline">\(a / \exp b = a \exp(-b)\)</span></li>
 </ul>
+</div>
+</div>
 </div><div class="column" style="width:50%;">
-<h4 id="array-manipulations"><strong>Array manipulations</strong></h4>
+<div class="solutionbox">
+<div class="solutionbox-header">
+<p><strong>Array manipulations</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 20px;">
 <ul>
 <li>slicing</li>
 <li>reshaping</li>
@@ -634,15 +644,22 @@
 <li>bitcast</li>
 <li>copies</li>
 </ul>
-<h4 id="ol-diggers-tricks"><strong>Ol’ Digger’s tricks</strong></h4>
+</div>
+</div>
+<div class="solutionbox">
+<div class="solutionbox-header">
+<p><strong>Ol’ Digger’s tricks</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 20px;">
 <ul>
 <li><span class="math inline">\(a^2 = a \times a\)</span>, <span class="math inline">\(a^3 = a \times a \times a\)</span></li>
 <li><span class="math inline">\(a / b = a\)</span>&gt;&gt;<span class="math inline">\(\log_2 b\)</span> if b is a power of 2</li>
 <li><span class="math inline">\(a \mod b = a \&amp; (b - 1)\)</span> if b is a power of 2</li>
 </ul>
-</div><p>and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)</p>
 </div>
-<p>::::</p>
+</div>
+</div></div>
+<p>and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)</p>
 </section>
 <section id="xla-common-subexpression-elimination-cse" class="slide level2">
 <h2>XLA Common Subexpression Elimination (CSE)</h2>

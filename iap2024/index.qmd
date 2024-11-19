@@ -100,12 +100,13 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `HomothetyOperator`             |             |
 | `DiagonalOperator`              |             |
 | `BroadcastDiagonalOperator`     | Non-square operator for broadcasting |
-| `DenseBlockDiagonalOperator`    | For dense matrix operations |
+| `TensorOperator`    | For dense matrix operations |
 | `IndexOperator`                 | Used for projecting skies onto time-ordered series|
 | `MoveAxisOperator`              |             |
 | `ReshapeOperator`               |             |
 | `RavelOperator`                 |             |
 | `SymmetricBandToeplitzOperator` | Methods: direct, FFT, overlap and save |
+| `Block*Operator` | Block assembly operators (column, diagonal, row)|
 
 : {tbl-colwidths="[30,70]"}
 
@@ -115,10 +116,10 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 |---------------------------|-------------|
 | `QURotationOperator`      |             |
 | `HWPOperator`             | Ideal HWP   |
+| `LinearPolarizerOperator` | Ideal linear polarizer |
 | `CMBOperator`             | Parametrized CMB SED |
 | `DustOperator`            | Parametrized dust SED |
 | `SynchrotronOperator`     | Parametrized synchrotron SED |
-| `LinearPolarizerOperator` | Ideal linear polarizer |
 
 : {tbl-colwidths="[30,70]"}
 
@@ -327,6 +328,48 @@ def func(x, y, theta1, theta2):
 ![Compiled StableHLO representation](assets/hlo/hlo-rot-furax.png){fig-align="center" width="60%"}
 
 :::
+
+## FURAX Algebraic Reductions: Block Assembly
+
+::: {style="font-size: 15px;"}
+
+<br>
+<br>
+
+| Operation | Reduction |
+|---------------------------------|-------------|
+| `BlockDiagonalOperator([D1, D2]) @ BlockColumnOperator([C1, C2])`              | `BlockColumnOperator([D1 @ C1, D2 @ C2])`|
+| `BlockRowOperator([R1, R2]) @ BlockDiagonalOperator([D1, D2])`              | `BlockRowOperator([R1 @ D1, R2 @ D2])`|
+| `BlockRowOperator([R1, R2]) @ BlockColumnOperator([C1, C2])`              | `R1 @ C1 + R2 @ C2`|
+
+: {tbl-colwidths="[60,40]"}
+
+:::
+
+<br>
+<br>
+
+#### Practical usage: combining observations
+
+Given two observations
+$$
+P =
+\begin{bmatrix}
+P_1 \\
+P_2
+\end{bmatrix}, \quad
+N^{-1} =
+\begin{bmatrix}
+N_1^{-1} & 0 \\
+0 & N_2^{-1}
+\end{bmatrix},
+$$
+
+The combining results in
+$$
+P^T N^{-1} P = P_1^T N_1^{-1} P_1 + P_2^T N_2^{-1} P_2.
+$$
+
 
 ## FURAX Algebraic Reductions: Instrument Acquisition
 

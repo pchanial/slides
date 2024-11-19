@@ -3,7 +3,7 @@ project:
   output-dir: .
 
 website:
-  title: "Massively Parallel Computing in Cosmology with JAX"
+  title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
   navbar:
     left:
       - href: index.qmd

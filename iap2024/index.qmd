@@ -498,8 +498,31 @@ $$
 <br>
 <br>
 <br>
-Credits: Scipol Ph.D students
+Credits: SciPol Ph.D students
 :::
+
+
+## Quantifying Biases from Non-Ideal Half Wave Plates
+
+<br>
+
+![](assets/hwp/hwp-ema.png){fig-align="center" width="100%"}
+
+#### Non-ideal Half Wave Plate
+- Made of several stacked layers
+- Takes into account the transmission and reflection of the incident electromagnetic field at the layers boundaries
+
+#### Furax modeling
+
+```python
+h = pol @ bandpass @ hwp @ mixing_matrix @ projection
+sol = ((h.T @ h).I @ h.T)(tod)
+```
+
+::: {style="color: gray; font-size: 16px"}
+Credit: Ema Tsang King Sang
+:::
+
 
 ## Component Separation {style="font-size: 22px;"}
 

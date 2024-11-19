@@ -124,11 +124,17 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 :::
 
-# Multi-level Optimizations {style="font-size: 35px; align=center;"}
+# Multi-level Optimizations {style="font-size: 35px;"}
 
 ## JAX GPU Compilation Chain
 
-![From the Python code to the GPU-native code](assets/jax-compilation-chain.png){fig-align="center" width="120%"}
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![From the Python code to the GPU-native code](assets/jax-compilation-chain.png){.nostrech fig-align="center" width="100%"}
 
 ## XLA simplifications
 

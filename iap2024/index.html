@@ -871,7 +871,23 @@
 <section id="cmb-applications" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
 <h1>CMB Applications</h1>
 <div style="color: gray; font-size: 16px">
-<p><br> <br> <br> <br> Credits: Scipol Ph.D students</p>
+<p><br> <br> <br> <br> Credits: SciPol Ph.D students</p>
+</div>
+</section>
+<section id="quantifying-biases-from-non-ideal-half-wave-plates" class="slide level2">
+<h2>Quantifying Biases from Non-Ideal Half Wave Plates</h2>
+<p><br></p>
+
+<img data-src="assets/hwp/hwp-ema.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><h4 id="non-ideal-half-wave-plate">Non-ideal Half Wave Plate</h4>
+<ul>
+<li>Made of several stacked layers</li>
+<li>Takes into account the transmission and reflection of the incident electromagnetic field at the layers boundaries</li>
+</ul>
+<h4 id="furax-modeling">Furax modeling</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>h <span class="op">=</span> pol <span class="op">@</span> bandpass <span class="op">@</span> hwp <span class="op">@</span> mixing_matrix <span class="op">@</span> projection</span>
+<span id="cb6-2"><a></a>sol <span class="op">=</span> ((h.T <span class="op">@</span> h).I <span class="op">@</span> h.T)(tod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div style="color: gray; font-size: 16px">
+<p>Credit: Ema Tsang King Sang</p>
 </div>
 </section>
 <section id="component-separation" class="slide level2" style="font-size: 22px;">
@@ -1002,40 +1018,40 @@
 <div class="fragment" data-fragment-index="1">
 <!-- -->
 <h4 id="creating-a-mixing-matrix-operator-for-sed-evaluation">Creating a Mixing Matrix Operator for SED evaluation</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a><span class="im">from</span> furax.seds <span class="im">import</span> <span class="op">\</span></span>
-<span id="cb6-2"><a></a>  CMBOperator,DustOperator, SynchrotronOperator</span>
-<span id="cb6-3"><a></a></span>
-<span id="cb6-4"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>
-<span id="cb6-5"><a></a>  cmb <span class="op">=</span> CMBOperator(nu, in_structure)</span>
-<span id="cb6-6"><a></a>  dust <span class="op">=</span> DustOperator(nu , TEMP_D , BETA_D)</span>
-<span id="cb6-7"><a></a>  synchrotron <span class="op">=</span> SynchrotronOperator(nu , BETA_S)</span>
-<span id="cb6-8"><a></a></span>
-<span id="cb6-9"><a></a>  mixed_sed <span class="op">=</span> BlockRowOperator({</span>
-<span id="cb6-10"><a></a>          <span class="st">'cmb'</span>: cmb,</span>
-<span id="cb6-11"><a></a>          <span class="st">'dust'</span>: dust,</span>
-<span id="cb6-12"><a></a>          <span class="st">'synchrotron'</span>: synchrotron,</span>
-<span id="cb6-13"><a></a>      })</span>
-<span id="cb6-14"><a></a>  <span class="cf">return</span> mixed_sed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a></a><span class="im">from</span> furax.seds <span class="im">import</span> <span class="op">\</span></span>
+<span id="cb7-2"><a></a>  CMBOperator,DustOperator, SynchrotronOperator</span>
+<span id="cb7-3"><a></a></span>
+<span id="cb7-4"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>
+<span id="cb7-5"><a></a>  cmb <span class="op">=</span> CMBOperator(nu, in_structure)</span>
+<span id="cb7-6"><a></a>  dust <span class="op">=</span> DustOperator(nu , TEMP_D , BETA_D)</span>
+<span id="cb7-7"><a></a>  synchrotron <span class="op">=</span> SynchrotronOperator(nu , BETA_S)</span>
+<span id="cb7-8"><a></a></span>
+<span id="cb7-9"><a></a>  mixed_sed <span class="op">=</span> BlockRowOperator({</span>
+<span id="cb7-10"><a></a>          <span class="st">'cmb'</span>: cmb,</span>
+<span id="cb7-11"><a></a>          <span class="st">'dust'</span>: dust,</span>
+<span id="cb7-12"><a></a>          <span class="st">'synchrotron'</span>: synchrotron,</span>
+<span id="cb7-13"><a></a>      })</span>
+<span id="cb7-14"><a></a>  <span class="cf">return</span> mixed_sed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="2">
 <!-- -->
 <h4 id="trivial-construction-of-a-spectral-likelihood-functions">Trivial construction of a spectral likelihood functions</h4>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a></a><span class="im">import</span> jax</span>
-<span id="cb7-2"><a></a></span>
-<span id="cb7-3"><a></a><span class="at">@jax.jit</span></span>
-<span id="cb7-4"><a></a><span class="kw">def</span> negative_log_prob(params, d):</span>
-<span id="cb7-5"><a></a>  A <span class="op">=</span> make_A(params[<span class="st">'TEMP_D'</span>], </span>
-<span id="cb7-6"><a></a>             params[<span class="st">'BETA_D'</span>], </span>
-<span id="cb7-7"><a></a>             params[<span class="st">'BETA_S'</span>])</span>
-<span id="cb7-8"><a></a></span>
-<span id="cb7-9"><a></a>  x <span class="op">=</span> (A.T <span class="op">@</span> invN)(d)</span>
-<span id="cb7-10"><a></a>  l <span class="op">=</span> jax.tree.<span class="bu">map</span>(<span class="kw">lambda</span> a, b: a <span class="op">@</span> b, x, (A.T <span class="op">@</span> invN <span class="op">@</span> A).I(x))<span class="op">\</span></span>
-<span id="cb7-11"><a></a>                       S</span>
-<span id="cb7-12"><a></a>  summed_log_prob <span class="op">=</span> jax.tree.<span class="bu">reduce</span>(operator.add, l)</span>
-<span id="cb7-13"><a></a></span>
-<span id="cb7-14"><a></a>  <span class="cf">return</span> <span class="op">-</span>summed_log_prob</span>
-<span id="cb7-15"><a></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a><span class="im">import</span> jax</span>
+<span id="cb8-2"><a></a></span>
+<span id="cb8-3"><a></a><span class="at">@jax.jit</span></span>
+<span id="cb8-4"><a></a><span class="kw">def</span> negative_log_prob(params, d):</span>
+<span id="cb8-5"><a></a>  A <span class="op">=</span> make_A(params[<span class="st">'TEMP_D'</span>], </span>
+<span id="cb8-6"><a></a>             params[<span class="st">'BETA_D'</span>], </span>
+<span id="cb8-7"><a></a>             params[<span class="st">'BETA_S'</span>])</span>
+<span id="cb8-8"><a></a></span>
+<span id="cb8-9"><a></a>  x <span class="op">=</span> (A.T <span class="op">@</span> invN)(d)</span>
+<span id="cb8-10"><a></a>  l <span class="op">=</span> jax.tree.<span class="bu">map</span>(<span class="kw">lambda</span> a, b: a <span class="op">@</span> b, x, (A.T <span class="op">@</span> invN <span class="op">@</span> A).I(x))<span class="op">\</span></span>
+<span id="cb8-11"><a></a>                       S</span>
+<span id="cb8-12"><a></a>  summed_log_prob <span class="op">=</span> jax.tree.<span class="bu">reduce</span>(operator.add, l)</span>
+<span id="cb8-13"><a></a></span>
+<span id="cb8-14"><a></a>  <span class="cf">return</span> <span class="op">-</span>summed_log_prob</span>
+<span id="cb8-15"><a></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <p><br></p>
@@ -1120,27 +1136,27 @@ d_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
 <section id="atmosphere-decontamination-using-time-domain-component-separation-1" class="slide level2">
 <h2>Atmosphere Decontamination Using Time-Domain Component Separation</h2>
 <h3 id="spectral-likelihood-computation-using-furax">Spectral likelihood computation using FURAX</h3>
-<div class="sourceCode" id="cb8" data-code-line-numbers="|17-21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a><span class="kw">def</span> average_spectral_likelihood_noise(d_atm, w_vec, PWV):</span>
-<span id="cb8-2"><a></a>    <span class="co"># POINTING matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
-<span id="cb8-3"><a></a>    P_single_freq <span class="op">=</span> pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)</span>
-<span id="cb8-4"><a></a>    P <span class="op">=</span> BlockColumnOperator({‘<span class="dv">93</span>’: P_single_freq, ‘<span class="dv">145</span>’: P_single_freq})</span>
-<span id="cb8-5"><a></a>    <span class="co"># MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))</span></span>
-<span id="cb8-6"><a></a>    A_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
-<span id="cb8-7"><a></a>    A_93 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_93)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
-<span id="cb8-8"><a></a>    A_145 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_145)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
-<span id="cb8-9"><a></a>    A <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: A_93, ‘<span class="dv">145</span>’: A_145})</span>
-<span id="cb8-10"><a></a>    <span class="co"># COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
-<span id="cb8-11"><a></a>    C <span class="op">=</span> A <span class="op">@</span> P</span>
-<span id="cb8-12"><a></a>    <span class="co"># NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))</span></span>
-<span id="cb8-13"><a></a>    N_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
-<span id="cb8-14"><a></a>    N_93 <span class="op">=</span> HomothetyOperator(noise_variance_93, in_structure<span class="op">=</span>N_block_structure)</span>
-<span id="cb8-15"><a></a>    N_145 <span class="op">=</span> HomothetyOperator(noise_variance_145, in_structure<span class="op">=</span>N_block_structure)</span>
-<span id="cb8-16"><a></a>    N <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: N_93, ‘<span class="dv">145</span>’: N_145})</span>
-<span id="cb8-17"><a></a>    <span class="co"># Spectral likelihood computation:</span></span>
-<span id="cb8-18"><a></a>    core_op <span class="op">=</span> (C.T <span class="op">@</span> N.I <span class="op">@</span> C).I</span>
-<span id="cb8-19"><a></a>    full_op <span class="op">=</span> N.I <span class="op">@</span> C <span class="op">@</span> core_op <span class="op">@</span> C.T <span class="op">@</span> N.I</span>
-<span id="cb8-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesIPyTree(d_atm) <span class="op">@</span> StokesIPyTree(full_op(d_atm))</span>
-<span id="cb8-21"><a></a>    <span class="cf">return</span> S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9" data-code-line-numbers="|17-21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a></a><span class="kw">def</span> average_spectral_likelihood_noise(d_atm, w_vec, PWV):</span>
+<span id="cb9-2"><a></a>    <span class="co"># POINTING matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
+<span id="cb9-3"><a></a>    P_single_freq <span class="op">=</span> pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)</span>
+<span id="cb9-4"><a></a>    P <span class="op">=</span> BlockColumnOperator({‘<span class="dv">93</span>’: P_single_freq, ‘<span class="dv">145</span>’: P_single_freq})</span>
+<span id="cb9-5"><a></a>    <span class="co"># MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))</span></span>
+<span id="cb9-6"><a></a>    A_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb9-7"><a></a>    A_93 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_93)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
+<span id="cb9-8"><a></a>    A_145 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_145)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
+<span id="cb9-9"><a></a>    A <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: A_93, ‘<span class="dv">145</span>’: A_145})</span>
+<span id="cb9-10"><a></a>    <span class="co"># COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
+<span id="cb9-11"><a></a>    C <span class="op">=</span> A <span class="op">@</span> P</span>
+<span id="cb9-12"><a></a>    <span class="co"># NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))</span></span>
+<span id="cb9-13"><a></a>    N_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb9-14"><a></a>    N_93 <span class="op">=</span> HomothetyOperator(noise_variance_93, in_structure<span class="op">=</span>N_block_structure)</span>
+<span id="cb9-15"><a></a>    N_145 <span class="op">=</span> HomothetyOperator(noise_variance_145, in_structure<span class="op">=</span>N_block_structure)</span>
+<span id="cb9-16"><a></a>    N <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: N_93, ‘<span class="dv">145</span>’: N_145})</span>
+<span id="cb9-17"><a></a>    <span class="co"># Spectral likelihood computation:</span></span>
+<span id="cb9-18"><a></a>    core_op <span class="op">=</span> (C.T <span class="op">@</span> N.I <span class="op">@</span> C).I</span>
+<span id="cb9-19"><a></a>    full_op <span class="op">=</span> N.I <span class="op">@</span> C <span class="op">@</span> core_op <span class="op">@</span> C.T <span class="op">@</span> N.I</span>
+<span id="cb9-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesIPyTree(d_atm) <span class="op">@</span> StokesIPyTree(full_op(d_atm))</span>
+<span id="cb9-21"><a></a>    <span class="cf">return</span> S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="solutionbox">
 <div class="solutionbox-body" style="font-size: 18px;">
 <ul>

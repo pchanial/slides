@@ -91,6 +91,13 @@
     "text": "FURAX Algebraic Reductions: Block Assembly\n\n \n\n\n\n\n\n\n\nOperation\nReduction\n\n\n\n\nBlockDiagonalOperator([D1, D2]) @ BlockColumnOperator([C1, C2])\nBlockColumnOperator([D1 @ C1, D2 @ C2])\n\n\nBlockRowOperator([R1, R2]) @ BlockDiagonalOperator([D1, D2])\nBlockRowOperator([R1 @ D1, R2 @ D2])\n\n\nBlockRowOperator([R1, R2]) @ BlockColumnOperator([C1, C2])\nR1 @ C1 + R2 @ C2\n\n\n\n\n \nPractical use case:\nGiven two observations\n\\[\n\\mathbf{P} =\n\\begin{bmatrix}\n\\mathbf{P}_1 \\\\\n\\mathbf{P}_2\n\\end{bmatrix}, \\quad\n\\mathbf{N}^{-1} =\n\\begin{bmatrix}\n\\mathbf{N}_1^{-1} & 0 \\\\\n0 & \\mathbf{N}_2^{-1}\n\\end{bmatrix},\n\\]\nThe combination is reduced to \\[\n\\mathbf{P}^\\top \\mathbf{N}^{-1} \\mathbf{P} = \\mathbf{P}_1^\\top \\mathbf{N}_1^{-1} \\mathbf{P}_1^{\\,} + \\mathbf{P}_2^\\top \\mathbf{N}_2^{-1} \\mathbf{P}_2^{\\,}.\n\\]"
   },
   {
+    "objectID": "iap2024/index.html#quantifying-biases-from-non-ideal-half-wave-plates",
+    "href": "iap2024/index.html#quantifying-biases-from-non-ideal-half-wave-plates",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "Quantifying Biases from Non-Ideal Half Wave Plates",
+    "text": "Quantifying Biases from Non-Ideal Half Wave Plates\n\n\nNon-ideal Half Wave Plate\n\nMade of several stacked layers\nTakes into account the transmission and reflection of the incident electromagnetic field at the layers boundaries\n\nFurax modeling\nh = pol @ bandpass @ hwp @ mixing_matrix @ projection\nsol = ((h.T @ h).I @ h.T)(tod)\n\nCredit: Ema Tsang King Sang"
+  },
+  {
     "objectID": "iap2024/index.html#component-separation",
     "href": "iap2024/index.html#component-separation",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",

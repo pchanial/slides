@@ -53,14 +53,14 @@
     "href": "iap2024/index.html#jax-gpu-compilation-chain-with-furax",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "JAX GPU Compilation Chain with FURAX",
-    "text": "JAX GPU Compilation Chain with FURAX\n\nFrom the Python code to the GPU-native code"
+    "text": "JAX GPU Compilation Chain with FURAX\n    \n\nFrom the Python code to the GPU-native code"
   },
   {
     "objectID": "iap2024/index.html#furax-algebraic-reductions-pointing-matrix",
     "href": "iap2024/index.html#furax-algebraic-reductions-pointing-matrix",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Algebraic Reductions: Pointing Matrix",
-    "text": "FURAX Algebraic Reductions: Pointing Matrix\n\nWhen the time-time noise covariance matrix \\(N\\) is diagonal and \\(P\\) is a “one-to-one” intensity projection matrix:\n\\[\nP =\n\\begin{bmatrix}\n0 & \\cdots & 0 & 1 & 0 & \\cdots & 0 \\\\\n0 & 1 & 0 & \\cdots & 0 & 0 & \\cdots & 0 \\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots \\\\\n1 & 0 & \\cdots & 0 & 0 & \\cdots & 0 \\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots \\\\\n0 & 0 & \\cdots & 0 & 1 & 0 & \\cdots & 0 \\\\\n\\end{bmatrix},\n\\] the product \\(P^{\\textrm{T}} N^{-1} P\\) is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning). Each term is related to the number of times a pixel of the map has been observed.\nFor IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.\nBy adding a rule for this operation, we’ve seen an performance improvement by more than a factor of 10 in the forward application (WIP, currently only for \\(N\\) scalar)."
+    "text": "FURAX Algebraic Reductions: Pointing Matrix\n\nWhen the time-time noise covariance matrix \\(N\\) is diagonal and \\(P\\) is a “one-to-one” intensity projection matrix:\n\\[\nP =\n\\begin{bmatrix}\n0 & \\cdots & 0 & 1 & 0 & \\cdots & 0 \\\\\n0 & 1 & 0 & \\cdots & 0 & 0 & \\cdots & 0 \\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots \\\\\n1 & 0 & \\cdots & 0 & 0 & \\cdots & 0 \\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots & \\vdots \\\\\n0 & 0 & \\cdots & 0 & 1 & 0 & \\cdots & 0 \\\\\n\\end{bmatrix},\n\\]\n \n\nthe product \\(P^{\\textrm{T}} N^{-1} P\\) is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning).\nEach term is related to the number of times a pixel of the map has been observed.\nFor IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.\nBy adding a rule for this operation, we’ve seen an performance improvement by more than a factor of 10 in the forward application (WIP, currently only for \\(N\\) scalar)."
   },
   {
     "objectID": "iap2024/index.html#furax-algebraic-reductions-composition-of-rotation-matrices",

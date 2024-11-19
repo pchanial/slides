@@ -717,6 +717,7 @@
 </section>
 <section id="jax-gpu-compilation-chain-with-furax" class="slide level2">
 <h2>JAX GPU Compilation Chain with FURAX</h2>
+<p><br> <br> <br> <br> <br></p>
 
 <img data-src="assets/jax-compilation-chain-with-furax.png" style="width:120.0%" class="r-stretch quarto-figure-center"><p class="caption">From the Python code to the GPU-native code</p></section>
 <section id="furax-algebraic-reductions-pointing-matrix" class="slide level2">
@@ -733,9 +734,14 @@ P =
 \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
 0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 \\
 \end{bmatrix},
-\]</span> the product <span class="math inline">\(P^{\textrm{T}} N^{-1} P\)</span> is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning). Each term is related to the number of times a pixel of the map has been observed.</p>
-<p>For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.</p>
-<p>By adding a <strong>rule</strong> for this operation, we’ve seen an performance improvement by more than a <strong>factor of 10</strong> in the forward application (WIP, currently only for <span class="math inline">\(N\)</span> scalar).</p>
+\]</span></p>
+<p><br> <br></p>
+<ul>
+<li><p>the product <span class="math inline">\(P^{\textrm{T}} N^{-1} P\)</span> is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning).</p></li>
+<li><p>Each term is related to the number of times a pixel of the map has been observed.</p></li>
+<li><p>For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.</p></li>
+<li><p>By adding a <strong>rule</strong> for this operation, we’ve seen an performance improvement by more than a <strong>factor of 10</strong> in the forward application (WIP, currently only for <span class="math inline">\(N\)</span> scalar).</p></li>
+</ul>
 </div>
 </section>
 <section id="furax-algebraic-reductions-composition-of-rotation-matrices" class="slide level2">

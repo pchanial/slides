@@ -4,7 +4,14 @@
     "href": "iap2024/index.html#furax-library",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Library",
-    "text": "FURAX Library\n\n\n\nGoals: Why FURAX ?  \nFURAX Operators: Presentation of the FURAX building blocks: the Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation."
+    "text": "FURAX Library\n\n\n\nMotivations and Goals: Why FURAX ?  \nFURAX Operators: Presentation of the FURAX building blocks: the Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation."
+  },
+  {
+    "objectID": "iap2024/index.html#abstractlinearoperator-class",
+    "href": "iap2024/index.html#abstractlinearoperator-class",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "AbstractLinearOperator Class",
+    "text": "AbstractLinearOperator Class\nThis class provides:\n\n\n\n\n\n\n\n\nOperation\nFURAX\nComment\n\n\n\n\nAddition\nA + B\n\n\n\nComposition\nA @ B\n\n\n\nMultiplication by scalar\nk * A\nReturns the composition of a HomothetyOperator and A\n\n\nTranspose\nA.T\nThrough JAX autodiff, but can be overriden\n\n\nInverse\nA.I\nUnless specifically implemented, use CG but it can be configured using a context manager"
   },
   {
     "objectID": "iap2024/index.html#jax-gpu-compilation-chain",

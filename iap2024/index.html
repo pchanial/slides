@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.43">
+  <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Pierre Chanial, Wassim Kabalan, Simon Biquart">
   <title>FURAX: a modular JAX toolbox for solving inverse problems in science</title>
@@ -405,7 +405,7 @@
 <div class="solutionbox">
 <div class="solutionbox-body" style="font-size: 22px; border-radius: 10px; border: 2px solid #521463;">
 <ul>
-<li><span style="color:#521463; font-size: 28px;"><strong>Goals</strong></span>: Why FURAX ? <br> <br></li>
+<li><span style="color:#521463; font-size: 28px;"><strong>Motivations and Goals</strong></span>: Why FURAX ? <br> <br></li>
 <li><span style="color:#521463; font-size: 28px;"><strong>FURAX Operators</strong></span>: Presentation of the FURAX building blocks: the Operators. <br> <br></li>
 <li><span style="color:#521463; font-size: 28px;"><strong>Optimizations</strong></span>: High-level algebraic reductions with FURAX. <br> <br></li>
 <li><span style="color:#521463; font-size: 28px;"><strong>CMB Applications</strong></span>: From map-making to component separation.</li>
@@ -413,16 +413,61 @@
 </div>
 </div>
 </section>
-<section id="goals" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
-<h1>Goals</h1>
+<section id="motivations-and-goals" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
+<h1>Motivations and Goals</h1>
 
 </section>
 
+<section>
 <section id="furax-building-blocks" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
 <h1>FURAX Building Blocks</h1>
 
 </section>
-
+<section id="abstractlinearoperator-class" class="slide level2">
+<h2>AbstractLinearOperator Class</h2>
+<p>This class provides:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 44%">
+<col style="width: 24%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>FURAX</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Addition</td>
+<td><code>A + B</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Composition</td>
+<td><code>A @ B</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Multiplication by scalar</td>
+<td><code>k * A</code></td>
+<td>Returns the composition of a HomothetyOperator and A</td>
+</tr>
+<tr class="even">
+<td>Transpose</td>
+<td><code>A.T</code></td>
+<td>Through JAX autodiff, but can be overriden</td>
+</tr>
+<tr class="odd">
+<td>Inverse</td>
+<td><code>A.I</code></td>
+<td>Unless specifically implemented, use CG but it can be configured using a context manager</td>
+</tr>
+</tbody>
+</table>
+</section></section>
 <section>
 <section id="multi-level-optimizations" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
 <h1>Multi-level Optimizations</h1>
@@ -492,8 +537,7 @@
 </figure>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </section>
 <section id="dead-code-elimination-dce" class="slide level2">
 <h2>Dead Code Elimination (DCE)</h2>
@@ -524,8 +568,7 @@
 </figure>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </section>
 <section id="jax-gpu-compilation-chain-with-furax" class="slide level2">
 <h2>JAX GPU Compilation Chain with FURAX</h2>
@@ -918,7 +961,7 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
       }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp('/' + window.location.host + '/');
+          var filterRegex = new RegExp("https:\/\/pchanial\.github\.io\/slides\/");
         var isInternal = (href) => {
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }

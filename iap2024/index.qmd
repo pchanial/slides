@@ -317,6 +317,12 @@ def func(x):
 
 ## JAX GPU Compilation Chain with FURAX
 
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
 ![From the Python code to the GPU-native code](assets/jax-compilation-chain-with-furax.png){fig-align="center" width="120%"}
 
 
@@ -337,11 +343,16 @@ P =
 0 & 0 & \cdots & 0 & 1 & 0 & \cdots & 0 \\
 \end{bmatrix},
 $$
-the product $P^{\textrm{T}} N^{-1} P$ is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning). Each term is related to the number of times a pixel of the map has been observed.
 
-For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.
+<br/>
+<br/>
 
-By adding a **rule** for this operation, we've seen an performance improvement by more than a **factor of 10** in the forward application (WIP, currently only for $N$ scalar).
+ - the product $P^{\textrm{T}} N^{-1} P$ is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning).
+ - Each term is related to the number of times a pixel of the map has been observed.
+
+ - For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.
+
+ - By adding a **rule** for this operation, we've seen an performance improvement by more than a **factor of 10** in the forward application (WIP, currently only for $N$ scalar).
 
 :::
 

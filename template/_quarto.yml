@@ -1,7 +1,6 @@
 project:
   type: website
   output-dir: .
-
 website:
   title: "Template"
   navbar:

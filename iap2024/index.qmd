@@ -81,13 +81,13 @@ logo1 : '
 
 #### **Mathematical identities**
 - $a\times 0 = 0$, $a - 0 = a$
-- $a\times 1 = 1$, $a / 1 = 1$
+- $a\times 1 = a$, $a / 1 = a$
 - $a - a = 0$
 - $-(-x) = x$
 - $(-a)(-b) = ab$
 - $ac + bc = (a+b)c$
-- $(a + c1) + (b + c2) =  a + b + (c1 + c2)$
 - $a / const = a \times (1 / const)$
+- $(a + c1) + (b + c2) =  a + b + (c1 + c2)$
 - $(a / b) / (c / d) = ad / bc$
 - $\ln e^x = x$
 - $\exp a \exp b = \exp(a+b)$

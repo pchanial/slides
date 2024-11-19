@@ -295,3 +295,124 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 $$
 
 # CMB Applications {style="font-size: 35px; align=center;"}
+
+---
+
+## Component Seperation {style="font-size: 22px;"}
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+![](assets/CMB/CMB-Planck.png){.nostretch fig-align="center" width="35%"}
+
+::: {.fragment fragment-index=1}
+
+![](assets/CMB/Plus_symbol.svg){.nostretch fig-align="center" width="10%"}
+
+![](assets/CMB/dust_planck.png){.nostretch fig-align="center" width="35%"}
+
+:::
+
+::: {.fragment fragment-index=2}
+
+![](assets/CMB/Plus_symbol.svg){.nostretch fig-align="center" width="10%"}
+
+![](assets/CMB/synch-planck.png){.nostretch fig-align="center" width="35%"}
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+- The **Cosmic Microwave Background (CMB)** signal is obscured by various **foregrounds**, making it challenging to detect the true cosmological information.
+
+::: {.fragment fragment-index=1}
+- **Dust**: Emission from galactic dust adds significant noise to the CMB, particularly affecting polarization measurements.
+:::
+
+::: {.fragment fragment-index=2}
+- **Synchrotron Radiation**: Electrons spiraling in the galaxy's magnetic fields produce synchrotron radiation, another major contaminant.
+:::
+
+::: {.fragment fragment-index=3}
+
+:::{.solutionbox}
+
+:::{.solutionbox-header style="font-size: 22px;"}
+
+**Component seperation methods**
+
+:::
+
+::::{.solutionbox-body style="font-size: 2Opx;"}
+
+- **Blind Methods**: Like **SMICA** (Spectral Matching Independent Component Analysis)
+- **Parametric Methods**: Like **FGbuster** (Foreground Buster)
+
+::::
+
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.notes}
+
+Le signal du fond diffus cosmologique, ou CMB, est en réalité obscurci par plusieurs avant-plans, ce qui rend difficile l'extraction des informations cosmologiques réelles.
+
+L'un des contaminants principaux est la poussière galactique. Cette poussière émet du rayonnement qui ajoute un bruit significatif au CMB, affectant particulièrement les mesures de polarisation.
+
+**NEXT**
+
+Un autre contaminant majeur est la radiation synchrotron. Elle est produite par des électrons en spirale dans les champs magnétiques de notre galaxie, ce qui vient encore plus brouiller le signal cosmologique que l'on souhaite observer.
+
+**AFTER**
+
+Pour pouvoir extraire une valeur fiable du rapport $r$, il est crucial de séparer ou de "démixer" ces composants. Le signal du CMB est mêlé à diverses émissions parasites.
+
+ Il existe différentes méthodes pour cela, principalement des méthodes aveugles comme SMICA, qui fonctionnent sans connaissances préalables des avant-plans, et des méthodes paramétriques comme FGbuster, qui reposent sur la modélisation explicite des avant-plans.
+
+Dans cette présentation, nous allons nous concentrer sur les méthodes paramétriques. Celles-ci nous permettent d'utiliser des modèles pour les avant-plans et d'améliorer la précision du processus de séparation.
+
+:::
+
+---
+
+## On-going development of parametric component separation within the FURAX framework
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+#### Does everything fgbuster does but “better"
+ - Uses the FURAX operators to represent linear algebra to efficient computing
+ - Is written in JAX, hardware accelerated and have easy access to gradients
+
+:::{.fragment fragment-index=1}
+
+<br />
+
+![](assets/CMB/Log_Like_bench.png){.nostretch fig-align="center" width="80%" style="border: 2px solid #000000;"}
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+#### Beyond fgbuster
+ - Automatic cluster detection for spectral index parameters
+  - Flexible likelihood model (can be extended to include more components and different objective functions)
+
+:::{.fragment fragment-index=1}
+
+![](assets/CMB/Comp-sep-patches.png){.nostretch fig-align="center" width="80%" style="border: 2px solid #000000;"}
+
+:::
+
+

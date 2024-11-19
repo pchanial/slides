@@ -415,4 +415,90 @@ Dans cette présentation, nous allons nous concentrer sur les méthodes paramét
 
 :::
 
+:::
 
+:::
+
+---
+
+##  On-going development of parametric component separation within the FURAX framework {style="font-size: 22px;"}
+
+:::{.columns}
+
+:::{.column width="50%"}
+
+:::{.fragment fragment-index=1}
+
+#### Creating a Mixing Matrix Operator for SED evaluation
+
+```python
+from furax.seds import CMBOperator,DustOperator,\
+                       SynchrotronOperator
+
+
+def make_A(TEMP_D , BETA_D , BETA_S):
+  cmb = CMBOperator(nu, in_structure)
+  dust = DustOperator(nu , TEMP_D , BETA_D)
+  synchrotron = SynchrotronOperator(nu , BETA_S)
+
+  sed = BlockDiagonalOperator({
+          'cmb': cmb,
+          'dust': dust,
+          'synchrotron': synchrotron
+      })
+  return sed(s)
+```
+
+:::
+
+:::
+
+:::{.column width="50%"}
+
+:::{.fragment fragment-index=2}
+
+#### Trivial construction of a spectral likelihood functions
+
+```python
+@jax.jit
+def negative_log_prob(params, d):
+  A = make_A(params['TEMP_D'], 
+             params['BETA_D'], 
+             params['BETA_S'])
+
+  x = (A.T @ invN)(d)
+  l = jax.tree.map(lambda a, b: a @ b, x, (A.T @ invN @ A).I(x))
+  summed_log_prob = jax.tree.reduce(operator.add, l)
+
+  return -summed_log_prob 
+```
+
+:::
+
+:::
+
+:::
+
+<br />
+<br />
+
+:::{.fragment fragment-index=3}
+
+:::{.solutionbox}
+
+:::{.solutionbox-header style="font-size: 22px;"}
+
+Easy to evaluate and extended
+
+:::
+
+::::{.solutionbox-body style="font-size: 20px;"}
+
+- The likelihood function is readily available and can be easily extended to include more components or different objective functions.
+- Easy access to gradients and hessians for optimization.
+
+::::
+
+:::
+
+:::

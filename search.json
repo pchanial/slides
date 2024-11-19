@@ -18,7 +18,7 @@
     "href": "iap2024/index.html#furax-operators-1",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Operators",
-    "text": "FURAX Operators\n\n\n\n\n\n\n\n\nGeneric Operator\nDescription\n\n\n\n\nIdentityOperator\n\n\n\nHomothetyOperator\n\n\n\nDiagonalOperator\n\n\n\nBroadcastDiagonalOperator\nNon-square operator for broadcasting\n\n\nDenseBlockDiagonalOperator\nFor dense matrix operations\n\n\nIndexOperator\nUsed for projecting skies onto time-ordered series\n\n\nMoveAxisOperator\n\n\n\nReshapeOperator\n\n\n\nRavelOperator\n\n\n\nSymmetricBandToeplitzOperator\nMethods: direct, FFT, overlap and save\n\n\n\n\n\n\n\n\n\n\n\nApplied Operator\nDescription\n\n\n\n\nQURotationOperator\n\n\n\nHWPOperator\nIdeal HWP\n\n\nCMBOperator\nParametrized CMB SED\n\n\nDustOperator\nParametrized dust SED\n\n\nSynchrotronOperator\nParametrized synchrotron SED\n\n\nLinearPolarizerOperator\nIdeal linear polarizer"
+    "text": "FURAX Operators\n\n\n\n\n\n\n\n\nGeneric Operator\nDescription\n\n\n\n\nIdentityOperator\n\n\n\nHomothetyOperator\n\n\n\nDiagonalOperator\n\n\n\nBroadcastDiagonalOperator\nNon-square operator for broadcasting\n\n\nTensorOperator\nFor dense matrix operations\n\n\nIndexOperator\nUsed for projecting skies onto time-ordered series\n\n\nMoveAxisOperator\n\n\n\nReshapeOperator\n\n\n\nRavelOperator\n\n\n\nSymmetricBandToeplitzOperator\nMethods: direct, FFT, overlap and save\n\n\nBlock*Operator\nBlock assembly operators (column, diagonal, row)\n\n\n\n\n\n\n\n\n\n\n\nApplied Operator\nDescription\n\n\n\n\nQURotationOperator\n\n\n\nHWPOperator\nIdeal HWP\n\n\nLinearPolarizerOperator\nIdeal linear polarizer\n\n\nCMBOperator\nParametrized CMB SED\n\n\nDustOperator\nParametrized dust SED\n\n\nSynchrotronOperator\nParametrized synchrotron SED"
   },
   {
     "objectID": "iap2024/index.html#jax-gpu-compilation-chain",
@@ -75,6 +75,13 @@
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Algebraic Reductions: Composition of Rotation Matrices",
     "text": "FURAX Algebraic Reductions: Composition of Rotation Matrices\nimport jax\nimport jax.numpy as jnp\n\ndef rot(x, y, theta):\n    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)\n    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)\n    return rotated_x, rotated_y\n\n@jax.jit\ndef func(x, y, theta1, theta2):\n    return rot(x, y, theta=theta1 + theta2)\n\n\n\n\nCompiled StableHLO representation"
+  },
+  {
+    "objectID": "iap2024/index.html#furax-algebraic-reductions-block-assembly",
+    "href": "iap2024/index.html#furax-algebraic-reductions-block-assembly",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "FURAX Algebraic Reductions: Block Assembly",
+    "text": "FURAX Algebraic Reductions: Block Assembly\n\n \n\n\n\n\n\n\n\nOperation\nReduction\n\n\n\n\nBlockDiagonalOperator([D1, D2]) @ BlockColumnOperator([C1, C2])\nBlockColumnOperator([D1 @ C1, D2 @ C2])\n\n\nBlockRowOperator([R1, R2]) @ BlockDiagonalOperator([D1, D2])\nBlockRowOperator([R1 @ D1, R2 @ D2])\n\n\nBlockRowOperator([R1, R2]) @ BlockColumnOperator([C1, C2])\nR1 @ C1 + R2 @ C2\n\n\n\n\n \nPractical usage: combining observations\nGiven two observations \\[\nP =\n\\begin{bmatrix}\nP_1 \\\\\nP_2\n\\end{bmatrix}, \\quad\nN^{-1} =\n\\begin{bmatrix}\nN_1^{-1} & 0 \\\\\n0 & N_2^{-1}\n\\end{bmatrix},\n\\]\nThe combining results in \\[\nP^T N^{-1} P = P_1^T N_1^{-1} P_1 + P_2^T N_2^{-1} P_2.\n\\]"
   },
   {
     "objectID": "iap2024/index.html#furax-algebraic-reductions-instrument-acquisition",

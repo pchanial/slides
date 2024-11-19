@@ -519,7 +519,7 @@
 <td>Non-square operator for broadcasting</td>
 </tr>
 <tr class="odd">
-<td><code>DenseBlockDiagonalOperator</code></td>
+<td><code>TensorOperator</code></td>
 <td>For dense matrix operations</td>
 </tr>
 <tr class="even">
@@ -541,6 +541,10 @@
 <tr class="even">
 <td><code>SymmetricBandToeplitzOperator</code></td>
 <td>Methods: direct, FFT, overlap and save</td>
+</tr>
+<tr class="odd">
+<td><code>Block*Operator</code></td>
+<td>Block assembly operators (column, diagonal, row)</td>
 </tr>
 </tbody>
 </table>
@@ -566,20 +570,20 @@
 <td>Ideal HWP</td>
 </tr>
 <tr class="odd">
+<td><code>LinearPolarizerOperator</code></td>
+<td>Ideal linear polarizer</td>
+</tr>
+<tr class="even">
 <td><code>CMBOperator</code></td>
 <td>Parametrized CMB SED</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>DustOperator</code></td>
 <td>Parametrized dust SED</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SynchrotronOperator</code></td>
 <td>Parametrized synchrotron SED</td>
-</tr>
-<tr class="even">
-<td><code>LinearPolarizerOperator</code></td>
-<td>Ideal linear polarizer</td>
 </tr>
 </tbody>
 </table>
@@ -755,6 +759,55 @@ P =
 </figure>
 </div>
 </div>
+</section>
+<section id="furax-algebraic-reductions-block-assembly" class="slide level2">
+<h2>FURAX Algebraic Reductions: Block Assembly</h2>
+<div style="font-size: 15px;">
+<p><br> <br></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 60%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>Reduction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>BlockDiagonalOperator([D1, D2]) @ BlockColumnOperator([C1, C2])</code></td>
+<td><code>BlockColumnOperator([D1 @ C1, D2 @ C2])</code></td>
+</tr>
+<tr class="even">
+<td><code>BlockRowOperator([R1, R2]) @ BlockDiagonalOperator([D1, D2])</code></td>
+<td><code>BlockRowOperator([R1 @ D1, R2 @ D2])</code></td>
+</tr>
+<tr class="odd">
+<td><code>BlockRowOperator([R1, R2]) @ BlockColumnOperator([C1, C2])</code></td>
+<td><code>R1 @ C1 + R2 @ C2</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br> <br></p>
+<h4 id="practical-usage-combining-observations">Practical usage: combining observations</h4>
+<p>Given two observations <span class="math display">\[
+P =
+\begin{bmatrix}
+P_1 \\
+P_2
+\end{bmatrix}, \quad
+N^{-1} =
+\begin{bmatrix}
+N_1^{-1} &amp; 0 \\
+0 &amp; N_2^{-1}
+\end{bmatrix},
+\]</span></p>
+<p>The combining results in <span class="math display">\[
+P^T N^{-1} P = P_1^T N_1^{-1} P_1 + P_2^T N_2^{-1} P_2.
+\]</span></p>
 </section>
 <section id="furax-algebraic-reductions-instrument-acquisition" class="slide level2">
 <h2>FURAX Algebraic Reductions: Instrument Acquisition</h2>

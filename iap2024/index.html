@@ -887,13 +887,68 @@ H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 </figure>
 </div>
 </div>
+</div></div>
+</section>
+<section id="on-going-development-of-parametric-component-separation-within-the-furax-framework-1" class="slide level2" style="font-size: 22px;">
+<h2>On-going development of parametric component separation within the FURAX framework</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment" data-fragment-index="1">
+<!-- -->
+<h4 id="creating-a-mixing-matrix-operator-for-sed-evaluation">Creating a Mixing Matrix Operator for SED evaluation</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="im">from</span> furax.seds <span class="im">import</span> CMBOperator,DustOperator,<span class="op">\</span></span>
+<span id="cb5-2"><a></a>                       SynchrotronOperator</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a></span>
+<span id="cb5-5"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>
+<span id="cb5-6"><a></a>  cmb <span class="op">=</span> CMBOperator(nu, in_structure)</span>
+<span id="cb5-7"><a></a>  dust <span class="op">=</span> DustOperator(nu , TEMP_D , BETA_D)</span>
+<span id="cb5-8"><a></a>  synchrotron <span class="op">=</span> SynchrotronOperator(nu , BETA_S)</span>
+<span id="cb5-9"><a></a></span>
+<span id="cb5-10"><a></a>  sed <span class="op">=</span> BlockDiagonalOperator({</span>
+<span id="cb5-11"><a></a>          <span class="st">'cmb'</span>: cmb,</span>
+<span id="cb5-12"><a></a>          <span class="st">'dust'</span>: dust,</span>
+<span id="cb5-13"><a></a>          <span class="st">'synchrotron'</span>: synchrotron</span>
+<span id="cb5-14"><a></a>      })</span>
+<span id="cb5-15"><a></a>  <span class="cf">return</span> sed(s)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment" data-fragment-index="2">
+<!-- -->
+<h4 id="trivial-construction-of-a-spectral-likelihood-functions">Trivial construction of a spectral likelihood functions</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a><span class="at">@jax.jit</span></span>
+<span id="cb6-2"><a></a><span class="kw">def</span> negative_log_prob(params, d):</span>
+<span id="cb6-3"><a></a>  A <span class="op">=</span> make_A(params[<span class="st">'TEMP_D'</span>], </span>
+<span id="cb6-4"><a></a>             params[<span class="st">'BETA_D'</span>], </span>
+<span id="cb6-5"><a></a>             params[<span class="st">'BETA_S'</span>])</span>
+<span id="cb6-6"><a></a></span>
+<span id="cb6-7"><a></a>  x <span class="op">=</span> (A.T <span class="op">@</span> invN)(d)</span>
+<span id="cb6-8"><a></a>  l <span class="op">=</span> jax.tree.<span class="bu">map</span>(<span class="kw">lambda</span> a, b: a <span class="op">@</span> b, x, (A.T <span class="op">@</span> invN <span class="op">@</span> A).I(x))</span>
+<span id="cb6-9"><a></a>  summed_log_prob <span class="op">=</span> jax.tree.<span class="bu">reduce</span>(operator.add, l)</span>
+<span id="cb6-10"><a></a></span>
+<span id="cb6-11"><a></a>  <span class="cf">return</span> <span class="op">-</span>summed_log_prob </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div>
+<p><br> <br></p>
+<div class="fragment" data-fragment-index="3">
+<div class="solutionbox">
+<div class="solutionbox-header" style="font-size: 22px;">
+<p>Easy to evaluate and extended</p>
+</div>
+<div class="solutionbox-body" style="font-size: 20px;">
+<ul>
+<li>The likelihood function is readily available and can be easily extended to include more components or different objective functions.</li>
+<li>Easy access to gradients and hessians for optimization.</li>
+</ul>
+</div>
+</div>
+</div>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</div></div>
 </section></section>
     </div>
   </div>

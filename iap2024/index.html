@@ -653,15 +653,131 @@ H = C_{\textrm{LP}} \, R_{2\theta} \, R_{-2\phi} \, C_{\textrm{HWP}} \, R_{2\phi
 H = C_{\textrm{LP}} \, R_{-2\theta + 4\phi + 2\psi}\, P
 \]</span></p>
 </section></section>
+<section>
 <section id="cmb-applications" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
 <h1>CMB Applications</h1>
+
+</section>
+<section id="component-seperation" class="slide level2" style="font-size: 22px;">
+<h2>Component Seperation</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/CMB-Planck.png" class="nostretch quarto-figure quarto-figure-center" style="width:35.0%"></p>
+</figure>
+</div>
+<div class="fragment" data-fragment-index="1">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/Plus_symbol.svg" class="nostretch quarto-figure quarto-figure-center" style="width:10.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/dust_planck.png" class="nostretch quarto-figure quarto-figure-center" style="width:35.0%"></p>
+</figure>
+</div>
+</div>
+<div class="fragment" data-fragment-index="2">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/Plus_symbol.svg" class="nostretch quarto-figure quarto-figure-center" style="width:10.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/synch-planck.png" class="nostretch quarto-figure quarto-figure-center" style="width:35.0%"></p>
+</figure>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>The <strong>Cosmic Microwave Background (CMB)</strong> signal is obscured by various <strong>foregrounds</strong>, making it challenging to detect the true cosmological information.</li>
+</ul>
+<div class="fragment" data-fragment-index="1">
+<ul>
+<li><strong>Dust</strong>: Emission from galactic dust adds significant noise to the CMB, particularly affecting polarization measurements.</li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="2">
+<ul>
+<li><strong>Synchrotron Radiation</strong>: Electrons spiraling in the galaxy’s magnetic fields produce synchrotron radiation, another major contaminant.</li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="3">
+<div class="solutionbox">
+<div class="solutionbox-header" style="font-size: 22px;">
+<p><strong>Component seperation methods</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 2Opx;">
+<ul>
+<li><strong>Blind Methods</strong>: Like <strong>SMICA</strong> (Spectral Matching Independent Component Analysis)</li>
+<li><strong>Parametric Methods</strong>: Like <strong>FGbuster</strong> (Foreground Buster)</li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Le signal du fond diffus cosmologique, ou CMB, est en réalité obscurci par plusieurs avant-plans, ce qui rend difficile l’extraction des informations cosmologiques réelles.</p>
+<p>L’un des contaminants principaux est la poussière galactique. Cette poussière émet du rayonnement qui ajoute un bruit significatif au CMB, affectant particulièrement les mesures de polarisation.</p>
+<p><strong>NEXT</strong></p>
+<p>Un autre contaminant majeur est la radiation synchrotron. Elle est produite par des électrons en spirale dans les champs magnétiques de notre galaxie, ce qui vient encore plus brouiller le signal cosmologique que l’on souhaite observer.</p>
+<p><strong>AFTER</strong></p>
+<p>Pour pouvoir extraire une valeur fiable du rapport <span class="math inline">\(r\)</span>, il est crucial de séparer ou de “démixer” ces composants. Le signal du CMB est mêlé à diverses émissions parasites.</p>
+<p>Il existe différentes méthodes pour cela, principalement des méthodes aveugles comme SMICA, qui fonctionnent sans connaissances préalables des avant-plans, et des méthodes paramétriques comme FGbuster, qui reposent sur la modélisation explicite des avant-plans.</p>
+<p>Dans cette présentation, nous allons nous concentrer sur les méthodes paramétriques. Celles-ci nous permettent d’utiliser des modèles pour les avant-plans et d’améliorer la précision du processus de séparation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="on-going-development-of-parametric-component-separation-within-the-furax-framework" class="slide level2">
+<h2>On-going development of parametric component separation within the FURAX framework</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="does-everything-fgbuster-does-but-better">Does everything fgbuster does but “better”</h4>
+<ul>
+<li>Uses the FURAX operators to represent linear algebra to efficient computing</li>
+<li>Is written in JAX, hardware accelerated and have easy access to gradients</li>
+</ul>
+<div class="fragment" data-fragment-index="1">
+<p><br></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/Log_Like_bench.png" class="nostretch quarto-figure quarto-figure-center" style="border: 2px solid #000000;;width:80.0%"></p>
+</figure>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<h4 id="beyond-fgbuster">Beyond fgbuster</h4>
+<ul>
+<li>Automatic cluster detection for spectral index parameters</li>
+<li>Flexible likelihood model (can be extended to include more components and different objective functions)</li>
+</ul>
+<div class="fragment" data-fragment-index="1">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/CMB/Comp-sep-patches.png" class="nostretch quarto-figure quarto-figure-center" style="border: 2px solid #000000;;width:80.0%"></p>
+</figure>
+</div>
+</div>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</section>
+</div></div>
+</section></section>
     </div>
   </div>
 

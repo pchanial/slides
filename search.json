@@ -75,5 +75,19 @@
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Algebraic Reductions: Instrument Acquisition",
     "text": "FURAX Algebraic Reductions: Instrument Acquisition\nGiven this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate: \\[\nH = C_{\\textrm{LP}} \\, R_{2\\theta} \\, R_{-2\\phi} \\, C_{\\textrm{HWP}} \\, R_{2\\phi} \\, R_{2\\psi} \\, P\n\\] with\n\n\\(\\theta\\): detector angle\n\\(\\phi\\): HWP rotation angle\n\\(\\psi\\): telescope rotation angle\n\nFURAX reduces this expression to:\n\\[\nH = C_{\\textrm{LP}} \\, R_{-2\\theta + 4\\phi + 2\\psi}\\, P\n\\]"
+  },
+  {
+    "objectID": "iap2024/index.html#component-seperation",
+    "href": "iap2024/index.html#component-seperation",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "Component Seperation",
+    "text": "Component Seperation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe Cosmic Microwave Background (CMB) signal is obscured by various foregrounds, making it challenging to detect the true cosmological information.\n\n\n\nDust: Emission from galactic dust adds significant noise to the CMB, particularly affecting polarization measurements.\n\n\n\n\nSynchrotron Radiation: Electrons spiraling in the galaxy’s magnetic fields produce synchrotron radiation, another major contaminant.\n\n\n\n\n\nComponent seperation methods\n\n\n\nBlind Methods: Like SMICA (Spectral Matching Independent Component Analysis)\nParametric Methods: Like FGbuster (Foreground Buster)\n\n\n\n\n\n\nLe signal du fond diffus cosmologique, ou CMB, est en réalité obscurci par plusieurs avant-plans, ce qui rend difficile l’extraction des informations cosmologiques réelles.\nL’un des contaminants principaux est la poussière galactique. Cette poussière émet du rayonnement qui ajoute un bruit significatif au CMB, affectant particulièrement les mesures de polarisation.\nNEXT\nUn autre contaminant majeur est la radiation synchrotron. Elle est produite par des électrons en spirale dans les champs magnétiques de notre galaxie, ce qui vient encore plus brouiller le signal cosmologique que l’on souhaite observer.\nAFTER\nPour pouvoir extraire une valeur fiable du rapport \\(r\\), il est crucial de séparer ou de “démixer” ces composants. Le signal du CMB est mêlé à diverses émissions parasites.\nIl existe différentes méthodes pour cela, principalement des méthodes aveugles comme SMICA, qui fonctionnent sans connaissances préalables des avant-plans, et des méthodes paramétriques comme FGbuster, qui reposent sur la modélisation explicite des avant-plans.\nDans cette présentation, nous allons nous concentrer sur les méthodes paramétriques. Celles-ci nous permettent d’utiliser des modèles pour les avant-plans et d’améliorer la précision du processus de séparation."
+  },
+  {
+    "objectID": "iap2024/index.html#on-going-development-of-parametric-component-separation-within-the-furax-framework",
+    "href": "iap2024/index.html#on-going-development-of-parametric-component-separation-within-the-furax-framework",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "On-going development of parametric component separation within the FURAX framework",
+    "text": "On-going development of parametric component separation within the FURAX framework\n\n\nDoes everything fgbuster does but “better”\n\nUses the FURAX operators to represent linear algebra to efficient computing\nIs written in JAX, hardware accelerated and have easy access to gradients\n\n\n\n\n\n\n\n\n\n\nBeyond fgbuster\n\nAutomatic cluster detection for spectral index parameters\nFlexible likelihood model (can be extended to include more components and different objective functions)"
   }
 ]

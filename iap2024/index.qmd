@@ -673,33 +673,175 @@ Easy to evaluate and extended
 :::
 
 
-## Atmosphere decontamination using time-domain component separation for the SO
+---
 
-**__Science goal:__** Characterise the observed atmospheric template from the recoded time-ordered data to separate the atmosphere 
-from the sky signal we are after.
+## Atmosphere Decontamination Using Time-Domain Component Separation for SO {style="font-size: 18px;"}
+
+#### Science Goal
+Characterize the observed atmospheric template from the recorded time-ordered data to separate the atmosphere from the sky signal we are after.
+
+::::: {.columns}
+
+:::: {.column width="40%"}
 
 #### Data Model
+$$
+\boxed{
+\vec{d}_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
+}
+$$
 
-:::{.columns}
+- $\vec{d}_{\text{atm}}$: Atmospheric time-ordered data recorded by our telescope.
+- $\mathbf{A}$: Mixing matrix.
+$$
+\mathbf{A} = 
+\begin{bmatrix}
+    a(\text{PWV}_{1}) & 0 \\
+    0 & a(\text{PWV}_{2})
+\end{bmatrix}
+$$
 
-:::{.column width="50%"}
+- $\mathbf{P}$: Pointing matrix.
+$$
+\mathbf{P} = 
+\begin{bmatrix}
+    P_{11} & P_{12} \\
+    P_{21} & P_{22}
+\end{bmatrix}
+$$
+- $s_{\text{atm}}$: Atmospheric template.
+- $n$: Noise.
 
-datm = A(PWV) P(wx, wy) satm + n
+::::
 
-datm : atmospheric time-ordered data recoded by our telescope
-A(PWV)
-P(wx, wy)
-satm atmospheric template
-n noise
+:::: {.column width="60%"}
+
+:::{.solutionbox}
+
+:::{.solutionbox-header style="font-size: 20px;"}
+
+**Model Parameters**
+
+:::
+
+:::{.solutionbox-body style="font-size: 18px;"}
+
+- **Wind velocity**: $\vec{w} = (w_x, w_y)$
+- **Precipitable Water Vapour (PWV)**: ~Amplitude of atmospheric fluctuations.
+- Estimate parameters by minimizing the spectral likelihood.
 
 :::
 
 :::
 
+### Spectral Likelihood
+
+$$
+\boxed{
+\langle \delta \mathcal{S} \text{spec}(w_x, w_y, \text{PWV} \mid \vec{d}_{\text{atm}}) \rangle 
+= \vec{d}_{\text{atm}}^\top (\mathbf{AP}) 
+\Big( (\mathbf{AP})^\top \mathbf{N}^{-1} (\mathbf{AP}) \Big)^{-1} 
+(\mathbf{AP})^\top \mathbf{N}^{-1} \vec{d}_{\text{atm}}
+}
+$$
 
 
-#### Spectral likelihood
+Where:
 
-⟨𝒮spec(wx, wy, PWV ∣⃗datm)⟩= ⃗dT
-atm (AP) ((AP)TN−1(AP))−1 (AP)TN−1 ⃗datm
+  - $\mathbf{A}$: Mixing matrix.
+  - $\mathbf{P}$: Pointing matrix.
+  - $\mathbf{N}$: Noise covariance matrix.
+$$
+\mathbf{N} = 
+\begin{bmatrix}
+    \sigma_{1}^{2} & 0 \\
+    0 & \sigma_{2}^{2}
+\end{bmatrix}
+$$
 
+::::
+
+:::::
+
+---
+
+## Atmosphere Decontamination Using Time-Domain Component Separation for SO {style="font-size: 25px;"}
+
+#### Spectral likelihood computation using FURAX:
+
+```{.python code-line-numbers="|17-21"}
+def average_spectral_likelihood_noise(d_atm, w_vec, PWV):
+    # POINTING matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)
+    P_single_freq = pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)
+    P = BlockColumnOperator({‘93’: P_single_freq, ‘145’: P_single_freq})
+    # MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))
+    A_block_structure = StokesIPyTree.structure_for((n_detectors,N_obs))
+    A_93 = HomothetyOperator(atm_emission(PWV, mu_93)/atm_emission(PWV, mu_93), _in_structure=A_block_structure)
+    A_145 = HomothetyOperator(atm_emission(PWV, mu_145)/atm_emission(PWV, mu_93), _in_structure=A_block_structure)
+    A = BlockDiagonalOperator({‘93’: A_93, ‘145’: A_145})
+    # COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)
+    C = A @ P
+    # NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))
+    N_block_structure = StokesIPyTree.structure_for((n_detectors,N_obs))
+    N_93 = HomothetyOperator(noise_variance_93, _in_structure=N_block_structure)
+    N_145 = HomothetyOperator(noise_variance_145, _in_structure=N_block_structure)
+    N = BlockDiagonalOperator({‘93’: N_93, ‘145’: N_145})
+    # Spectral likelihood computation:
+    core_op = (C.T @ N.I @ C).I
+    full_op = N.I @ C @ core_op @ C.T @ N.I
+    S = - StokesIPyTree(d_atm) @ StokesIPyTree(full_op(d_atm))
+    return S
+```
+
+:::{.solutionbox}
+
+:::{.solutionbox-body style="font-size: 18px;"}
+
+- Easily extendible
+- Easy access to gradients
+
+:::
+
+:::
+
+---
+
+## Atmosphere Decontamination Using Time-Domain Component Separation for SO {style="font-size: 25px;"}
+
+#### Spectral likelihood minimization
+
+
+:::::{.columns}
+
+::::{.column width="60%"}
+
+![Spectral likelihood gridding](assets/CMB/Spec-likelihood-gridding.png){.nostretch fig-align="center" width="100%" style="border: 2px solid #000000;"}
+
+::::
+
+::::{.column width="40%"}
+
+<br />
+<br />
+
+:::{.solutionbox}
+
+:::{.solutionbox-header style="font-size: 20px;"}
+
+**Gridding process**
+
+:::
+
+:::{.solutionbox-body style="font-size: 18px;"}
+
+➜ This spectral likelihood is minimised through gridding: we compute  
+$\langle \delta \mathcal{S} \text{spec}(w_x, w_y \mid \text{PWV}_{\text{sim}}) \rangle$  
+for 22,500 different combinations of $(w_x, w_y)$.
+
+:::
+
+:::
+
+::::
+
+:::::

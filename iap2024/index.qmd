@@ -90,9 +90,18 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 :::
 
-## FURAX Operators
+## FURAX Operators {style="font-size: 18px;"}
 
-::: {style="font-size: 18px;"}
+<br/>
+<br/>
+
+::: {.columns}
+
+::: {.column width="60%"}
+
+::: {.solutionbox}
+
+:::{.solutionbox-body style="font-size: 17px;"}
 
 | Generic Operator                | Description |
 |---------------------------------|-------------|
@@ -108,9 +117,19 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `SymmetricBandToeplitzOperator` | Methods: direct, FFT, overlap and save |
 | `Block*Operator` | Block assembly operators (column, diagonal, row)|
 
-: {tbl-colwidths="[30,70]"}
+:::
 
-<br>
+:::
+
+
+:::
+
+::: {.column width="40%"}
+
+::: {.solutionbox}
+
+:::{.solutionbox-body style="font-size: 17px;"}
+
 
 | Applied Operator          | Description |
 |---------------------------|-------------|
@@ -121,7 +140,13 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `DustOperator`            | Parametrized dust SED |
 | `SynchrotronOperator`     | Parametrized synchrotron SED |
 
-: {tbl-colwidths="[30,70]"}
+:::
+
+:::
+
+:::
+
+
 
 :::
 
@@ -597,3 +622,35 @@ Easy to evaluate and extended
 :::
 
 :::
+
+
+## Atmosphere decontamination using time-domain component separation for the SO
+
+**__Science goal:__** Characterise the observed atmospheric template from the recoded time-ordered data to separate the atmosphere 
+from the sky signal we are after.
+
+#### Data Model
+
+:::{.columns}
+
+:::{.column width="50%"}
+
+datm = A(PWV) P(wx, wy) satm + n
+
+datm : atmospheric time-ordered data recoded by our telescope
+A(PWV)
+P(wx, wy)
+satm atmospheric template
+n noise
+
+:::
+
+:::
+
+
+
+#### Spectral likelihood
+
+⟨𝒮spec(wx, wy, PWV ∣⃗datm)⟩= ⃗dT
+atm (AP) ((AP)TN−1(AP))−1 (AP)TN−1 ⃗datm
+

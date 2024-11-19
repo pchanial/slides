@@ -423,14 +423,17 @@
 <h1>FURAX Building Blocks</h1>
 
 </section>
-<section id="abstractlinearoperator-class" class="slide level2">
-<h2>AbstractLinearOperator Class</h2>
-<p>This class provides:</p>
+<section id="furax-operators" class="slide level2">
+<h2>FURAX Operators</h2>
+<p><br></p>
+<p>The base class <code>AbstractLinearOperator</code> provides a default implementation for the usual linear algebra operations.</p>
+<p><br></p>
+<div style="font-size: 18px;">
 <table class="caption-top">
 <colgroup>
-<col style="width: 44%">
-<col style="width: 24%">
-<col style="width: 31%">
+<col style="width: 25%">
+<col style="width: 35%">
+<col style="width: 40%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -463,10 +466,124 @@
 <tr class="odd">
 <td>Inverse</td>
 <td><code>A.I</code></td>
-<td>Unless specifically implemented, use CG but it can be configured using a context manager</td>
+<td>By default, use CG but it can be overriden or configured using a context manager</td>
+</tr>
+<tr class="even">
+<td>Block Assembly</td>
+<td><code>BlockColumnOperator([A, B])</code> <code>BlockDiagonalOperator([A, B])</code> <code>BlockRowOperator([A, B])</code></td>
+<td>Handle any PyTree of Operators: <code>Block*Operator({'a': A, 'b': B})</code></td>
+</tr>
+<tr class="odd">
+<td>Flattened dense matrix</td>
+<td><code>A.as_matrix()</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Algebraic reduction</td>
+<td><code>A.reduce()</code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+</div>
+</section>
+<section id="furax-operators-1" class="slide level2">
+<h2>FURAX Operators</h2>
+<div style="font-size: 18px;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Generic Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>IdentityOperator</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>HomothetyOperator</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>DiagonalOperator</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>BroadcastDiagonalOperator</code></td>
+<td>Non-square operator for broadcasting</td>
+</tr>
+<tr class="odd">
+<td><code>DenseBlockDiagonalOperator</code></td>
+<td>For dense matrix operations</td>
+</tr>
+<tr class="even">
+<td><code>IndexOperator</code></td>
+<td>Used for projecting skies onto time-ordered series</td>
+</tr>
+<tr class="odd">
+<td><code>MoveAxisOperator</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>ReshapeOperator</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>RavelOperator</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>SymmetricBandToeplitzOperator</code></td>
+<td>Methods: direct, FFT, overlap and save</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Applied Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>QURotationOperator</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>HWPOperator</code></td>
+<td>Ideal HWP</td>
+</tr>
+<tr class="odd">
+<td><code>CMBOperator</code></td>
+<td>Parametrized CMB SED</td>
+</tr>
+<tr class="even">
+<td><code>DustOperator</code></td>
+<td>Parametrized dust SED</td>
+</tr>
+<tr class="odd">
+<td><code>SynchrotronOperator</code></td>
+<td>Parametrized synchrotron SED</td>
+</tr>
+<tr class="even">
+<td><code>LinearPolarizerOperator</code></td>
+<td>Ideal linear polarizer</td>
+</tr>
+</tbody>
+</table>
+</div>
 </section></section>
 <section>
 <section id="multi-level-optimizations" class="title-slide slide level1 center" style="font-size: 35px; align=center;">

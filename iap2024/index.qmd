@@ -659,11 +659,15 @@ Credit: Ema Tsang King Sang
 - The **Cosmic Microwave Background (CMB)** signal is obscured by various **foregrounds**, making it challenging to detect the true cosmological information.
 
 ::: {.fragment fragment-index=1}
+
 - **Dust**: Emission from galactic dust adds significant noise to the CMB, particularly affecting polarization measurements.
+
 :::
 
 ::: {.fragment fragment-index=2}
+
 - **Synchrotron Radiation**: Electrons spiraling in the galaxy's magnetic fields produce synchrotron radiation, another major contaminant.
+
 :::
 
 ::: {.fragment fragment-index=3}
@@ -869,13 +873,13 @@ $$
 
 :::{.solutionbox}
 
-:::{.solutionbox-header style="font-size: 20px;"}
+:::{.solutionbox-header style="font-size: 19px;"}
 
 **Model Parameters**
 
 :::
 
-:::{.solutionbox-body style="font-size: 18px;"}
+:::{.solutionbox-body style="font-size: 17px;"}
 
 - **Wind velocity**: $\vec{w} = (w_x, w_y)$
 - **Precipitable Water Vapour (PWV)**: ~Amplitude of atmospheric fluctuations.
@@ -898,8 +902,8 @@ $
 - Pointing matrix
 $\mathbf{P} =
 \begin{bmatrix}
-    P_{11} & P_{12} \\
-    P_{21} & P_{22}
+    P_{1} \\
+    P_{2} 
 \end{bmatrix}$
 
 - Atmospheric template: $s_{\text{atm}}$

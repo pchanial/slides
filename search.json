@@ -7,6 +7,13 @@
     "text": "FURAX Library\n\n\n\nMotivations and Goals: Why FURAX ?  \nFURAX Operators: Presentation of the FURAX building blocks: the Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation."
   },
   {
+    "objectID": "iap2024/index.html#furax-pytrees",
+    "href": "iap2024/index.html#furax-pytrees",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "FURAX PyTrees",
+    "text": "FURAX PyTrees\n \nFURAX relies on PyTrees to represent the data. For example, for component separation analysis, we can write the generalized sky as a nested PyTree\nsky = {\n  'cmb': HealpixLandscape(NSIDE, 'IQU').normal(key1),\n  'dust': HealpixLandscape(NSIDE, 'IQU').normal(key2),\n  'synchrotron': HealpixLandscape(NSIDE, 'IQU').normal(key3),\n}\nHealpixLandscape(NSIDE, 'IQU') returns an instance of StokesIQUPyTree, which has the attributes i, q and u that store the JAX arrays of the Stokes components.\nAlso available are StokesIPyTree, StokesQUPyTree and StokesIQUVPyTree.\n\nPyTree are then used by the FURAX Operators:\n# Given an acquisition H:\ntod = H(sky)"
+  },
+  {
     "objectID": "iap2024/index.html#furax-operators",
     "href": "iap2024/index.html#furax-operators",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
@@ -35,18 +42,18 @@
     "text": "XLA simplifications\n\n\n\n\n\nMathematical identities\n\n\n\n\\(a\\times 0 = a - a = 0\\)\n\\(a - 0 = a\\times 1 = a / 1 = a^1 = a\\)\n\\(a^{-1} = 1/a\\), \\(a^{1/2} = \\sqrt{a}\\)\n\\(-(-x) = x\\)\n\\((-a)(-b) = ab\\)\n\\(ac + bc = (a+b)c\\)\n\\(a / const = a \\times (1 / const)\\)\n\\((a + c1) + (b + c2) =  a + b + (c1 + c2)\\)\n\\((a / b) / (c / d) = ad / bc\\)\n\\(\\ln e^x = x\\)\n\\(\\exp a \\exp b = \\exp(a+b)\\)\n\\(a / \\exp b = a \\exp(-b)\\)\n\n\n\n\n\n\nArray manipulations\n\n\n\nslicing\nreshaping\nbroadcasting\ntransposition\nbitcast\ncopies\n\n\n\n\n\nOl’ Digger’s tricks\n\n\n\n\\(a^2 = a \\times a\\), \\(a^3 = a \\times a \\times a\\)\n\\(a / b = a\\)&gt;&gt;\\(\\log_2 b\\) if b is a power of 2\n\\(a \\mod b = a \\& (b - 1)\\) if b is a power of 2\n\n\n\n\nand many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)"
   },
   {
-    "objectID": "iap2024/index.html#xla-common-subexpression-elimination-cse",
-    "href": "iap2024/index.html#xla-common-subexpression-elimination-cse",
-    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
-    "section": "XLA Common Subexpression Elimination (CSE)",
-    "text": "XLA Common Subexpression Elimination (CSE)\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_cse(theta):\n    a = jnp.sin(theta)\n    b = jnp.sin(theta) + 1\n    return a + b\n\n\n\nXLA Common Subexpression Elimination (CSE)\n\n\n\nDefinition: CSE identifies and eliminates duplicate computations within a function to optimize performance.\nExample in Code:\n\nWithout CSE: jnp.sin(theta) computed twice.\nAfter CSE: Shared computation across a and b.\n\nBenefits:\n\nReduces redundant computation.\nEnhances runtime efficiency and memory usage.\n\n\n\n\n\n\n\n\n\n\nCompiled StableHLO representation"
-  },
-  {
     "objectID": "iap2024/index.html#dead-code-elimination-dce",
     "href": "iap2024/index.html#dead-code-elimination-dce",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "Dead Code Elimination (DCE)",
     "text": "Dead Code Elimination (DCE)\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_dce(x):\n    unused = jnp.sin(x)\n    y = jnp.exp(x)\n    return y[0]\n\n\n\n\nCompiled StableHLO representation\n\n\n\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_full(x):\n    return jnp.exp(x)\n\n\n\n\n\n\n\nFull computation vs DCE"
+  },
+  {
+    "objectID": "iap2024/index.html#xla-common-subexpression-elimination-cse",
+    "href": "iap2024/index.html#xla-common-subexpression-elimination-cse",
+    "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
+    "section": "XLA Common Subexpression Elimination (CSE)",
+    "text": "XLA Common Subexpression Elimination (CSE)\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_cse(theta):\n    a = jnp.sin(theta)\n    b = jnp.sin(theta) + 1\n    return a + b\n\n\n\nXLA Common Subexpression Elimination (CSE)\n\n\n\nDefinition: CSE identifies and eliminates duplicate computations within a function to optimize performance.\nExample in Code:\n\nWithout CSE: jnp.sin(theta) computed twice.\nAfter CSE: Shared computation across a and b.\n\nBenefits:\n\nReduces redundant computation.\nEnhances runtime efficiency and memory usage.\n\n\n\n\n\n\n\n\n\n\nCompiled StableHLO representation"
   },
   {
     "objectID": "iap2024/index.html#jax-gpu-compilation-chain-with-furax",

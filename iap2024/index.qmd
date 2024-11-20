@@ -44,7 +44,7 @@ logo1 : '
 
 ::::{.solutionbox-body style="font-size: 22px; border-radius: 10px; border: 2px solid #521463;"}
 
-- <span style="color:#521463; font-size: 28px;">**Motivations and Goals**</span>: Why FURAX ?
+- <span style="color:#521463; font-size: 28px;">**Motivations and Goals**</span>: Why and for what FURAX ?
 <br />
 <br />
 - <span style="color:#521463; font-size: 28px;">**FURAX Operators**</span>: Presentation of the FURAX building blocks: the Operators.
@@ -59,8 +59,19 @@ logo1 : '
 :::
 
 
+## Motivations and Goals
 
-# Motivations and Goals {style="font-size: 35px; align=center;"}
+<br>
+<br>
+
+- Inverse problems
+- Modularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach
+- JAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers
+- Framework for robust B-mode analysis
+- Able to handle SO- and S4-like data sets volumes, Compatibility with TOAST 
+- Non-ideal optical components
+- 1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)
+- Multi-GPU parallelization (soon) 
 
 
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}

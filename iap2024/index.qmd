@@ -62,16 +62,23 @@ logo1 : '
 ## Motivations and Goals
 
 <br>
-<br>
 
 - Inverse problems
+- Open source: [https://github.com/CMBSciPol/furax](https://github.com/CMBSciPol/furax)
+
+<br>
+
 - Modularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach
 - JAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers
 - Framework for robust B-mode analysis
 - Able to handle SO- and S4-like data sets volumes, Compatibility with TOAST 
 - Non-ideal optical components
 - 1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)
-- Multi-GPU parallelization (soon) 
+- Multi-GPU parallelization (soon)
+
+<br>
+You can try it: `pip install furax`, bearing in mind that the library is actively developed and currently in a refactoring phase.
+
 
 
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}

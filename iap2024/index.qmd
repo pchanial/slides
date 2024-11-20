@@ -65,6 +65,37 @@ logo1 : '
 
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}
 
+
+## FURAX PyTrees
+
+
+<br>
+<br>
+
+FURAX relies on PyTrees to represent the data. For example, for component separation analysis, we can write the generalized sky as a nested PyTree
+
+```python
+sky = {
+  'cmb': HealpixLandscape(NSIDE, 'IQU').normal(key1),
+  'dust': HealpixLandscape(NSIDE, 'IQU').normal(key2),
+  'synchrotron': HealpixLandscape(NSIDE, 'IQU').normal(key3),
+}
+```
+
+`HealpixLandscape(NSIDE, 'IQU')` returns an instance of `StokesIQUPyTree`, which has the attributes `i`, `q` and `u` that store the JAX arrays of the Stokes components.
+
+Also available are `StokesIPyTree`, `StokesQUPyTree` and `StokesIQUVPyTree`.
+
+<br>
+
+PyTree are then used by the FURAX Operators:
+
+```python
+# Given an acquisition H:
+tod = H(sky)
+```
+
+
 ## FURAX Operators
 
 <br>
@@ -249,6 +280,60 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 and many more (see [xla/hlo/transforms/simplifiers/algebraic_simplifier.cc](xla/hlo/transforms/simplifiers/algebraic_simplifier.cc))
 
 
+## Dead Code Elimination (DCE)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func_dce(x):
+    unused = jnp.sin(x)
+    y = jnp.exp(x)
+    return y[0]
+```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-func-dce.png){fig-align="center" width="60%"}
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment fragment-index=2}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func_full(x):
+    return jnp.exp(x)
+
+
+
+```
+
+:::
+
+::: {.fragment fragment-index=3}
+
+![Full computation vs DCE](assets/hlo/bench-dce.png){fig-align="center" width="190%"}
+
+:::
+
+:::
+
+::::
+
+
 ## XLA Common Subexpression Elimination (CSE)
 
 :::: {.columns}
@@ -308,59 +393,6 @@ def func_cse(theta):
 
 ::::
 
-
-## Dead Code Elimination (DCE)
-
-:::: {.columns}
-
-::: {.column width="50%"}
-
-```python
-import jax
-import jax.numpy as jnp
-
-@jax.jit
-def func_dce(x):
-    unused = jnp.sin(x)
-    y = jnp.exp(x)
-    return y[0]
-```
-
-::: {.fragment fragment-index=1}
-
-![Compiled StableHLO representation](assets/hlo/hlo-func-dce.png){fig-align="center" width="60%"}
-
-:::
-
-:::
-
-::: {.column width="50%"}
-
-::: {.fragment fragment-index=2}
-
-```python
-import jax
-import jax.numpy as jnp
-
-@jax.jit
-def func_full(x):
-    return jnp.exp(x)
-
-
-
-```
-
-:::
-
-::: {.fragment fragment-index=3}
-
-![Full computation vs DCE](assets/hlo/bench-dce.png){fig-align="center" width="190%"}
-
-:::
-
-:::
-
-::::
 
 ## JAX GPU Compilation Chain with FURAX
 

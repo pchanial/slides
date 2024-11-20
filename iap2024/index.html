@@ -660,7 +660,7 @@
 </div>
 </div>
 </div></div>
-<p>and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)</p>
+<p>and many more (see <a href="xla/hlo/transforms/simplifiers/algebraic_simplifier.cc">xla/hlo/transforms/simplifiers/algebraic_simplifier.cc</a>)</p>
 </section>
 <section id="xla-common-subexpression-elimination-cse" class="slide level2">
 <h2>XLA Common Subexpression Elimination (CSE)</h2>
@@ -674,9 +674,31 @@
 <span id="cb1-6"><a></a>    a <span class="op">=</span> jnp.sin(theta)</span>
 <span id="cb1-7"><a></a>    b <span class="op">=</span> jnp.sin(theta) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb1-8"><a></a>    <span class="cf">return</span> a <span class="op">+</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="fragment" data-fragment-index="2">
+<div class="solutionbox">
+<div class="solutionbox-header" style="font-size: 22px;">
+<p><strong>XLA Common Subexpression Elimination (CSE)</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 20px;">
+<ul>
+<li><p><strong>Definition</strong>: CSE identifies and eliminates duplicate computations within a function to optimize performance.</p></li>
+<li><p><strong>Example in Code</strong>:</p>
+<ul>
+<li>Without CSE: <code>jnp.sin(theta)</code> computed twice.</li>
+<li>After CSE: Shared computation across <code>a</code> and <code>b</code>.</li>
+</ul></li>
+<li><p><strong>Benefits</strong>:</p>
+<ul>
+<li>Reduces redundant computation.</li>
+<li>Enhances runtime efficiency and memory usage.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
 </div><div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="1">
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-center" style="border: 2px solid #000000;">
 <figure>
 <p><img data-src="assets/hlo/hlo-func-cse.png" style="width:60.0%"></p>
 <figcaption>Compiled StableHLO representation</figcaption>
@@ -1155,10 +1177,10 @@ d_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
 \]</span></p>
 </div><div class="column" style="width:60%;">
 <div class="solutionbox">
-<div class="solutionbox-header" style="font-size: 20px;">
+<div class="solutionbox-header" style="font-size: 19px;">
 <p><strong>Model Parameters</strong></p>
 </div>
-<div class="solutionbox-body" style="font-size: 18px;">
+<div class="solutionbox-body" style="font-size: 17px;">
 <ul>
 <li><strong>Wind velocity</strong>: <span class="math inline">\(\vec{w} = (w_x, w_y)\)</span></li>
 <li><strong>Precipitable Water Vapour (PWV)</strong>: ~Amplitude of atmospheric fluctuations.</li>
@@ -1175,8 +1197,8 @@ d_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
 \end{bmatrix}\)</span></p></li>
 <li><p>Pointing matrix <span class="math inline">\(\mathbf{P} =
 \begin{bmatrix}
-  P_{11} &amp; P_{12} \\
-  P_{21} &amp; P_{22}
+  P_{1} \\
+  P_{2}
 \end{bmatrix}\)</span></p></li>
 <li><p>Atmospheric template: <span class="math inline">\(s_{\text{atm}}\)</span></p></li>
 <li><p>Noise: <span class="math inline">\(n\)</span>, of covariance matrix <span class="math inline">\(\mathbf{N} =

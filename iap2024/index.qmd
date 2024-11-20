@@ -246,7 +246,7 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 :::::
 
-and many more (see xla/hlo/transforms/simplifiers/algebraic_simplifier.cc)
+and many more (see [xla/hlo/transforms/simplifiers/algebraic_simplifier.cc](xla/hlo/transforms/simplifiers/algebraic_simplifier.cc))
 
 
 ## XLA Common Subexpression Elimination (CSE)
@@ -265,13 +265,42 @@ def func_cse(theta):
     b = jnp.sin(theta) + 1
     return a + b
  ```
+
+:::{.fragment fragment-index=2}
+
+:::{.solutionbox}
+
+:::{.solutionbox-header style="font-size: 22px;"}
+
+**XLA Common Subexpression Elimination (CSE)**
+
+:::
+
+::::{.solutionbox-body style="font-size: 20px;"}
+
+- **Definition**: CSE identifies and eliminates duplicate computations within a function to optimize performance.
+
+- **Example in Code**:
+  - Without CSE: `jnp.sin(theta)` computed twice.
+  - After CSE: Shared computation across `a` and `b`.
+
+- **Benefits**:
+  - Reduces redundant computation.
+  - Enhances runtime efficiency and memory usage.
+
+::::
+
+:::
+
+:::
+
 :::
 
 ::: {.column width="50%"}
 
 ::: {.fragment fragment-index=1}
 
-![Compiled StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%"}
+![Compiled StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%" style="border: 2px solid #000000;"}
 
 :::
 

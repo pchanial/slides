@@ -4,14 +4,14 @@
     "href": "iap2024/index.html#furax-library",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Library",
-    "text": "FURAX Library\n\n\n\nMotivations and Goals: Why and for what FURAX ?  \nFURAX Operators: Presentation of the FURAX building blocks: the Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation."
+    "text": "FURAX Library\n \n\n\n\nMotivations and Goals: Why and for what FURAX ?  \nFURAX Bulding Blocks: Presentation of the FURAX PyTrees and Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation."
   },
   {
     "objectID": "iap2024/index.html#motivations-and-goals",
     "href": "iap2024/index.html#motivations-and-goals",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "Motivations and Goals",
-    "text": "Motivations and Goals\n\n\nInverse problems\nOpen source: https://github.com/CMBSciPol/furax\n\n\n\nModularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach\nJAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers\nFramework for robust B-mode analysis\nAble to handle SO- and S4-like data sets volumes, Compatibility with TOAST\nNon-ideal optical components\n1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)\nMulti-GPU parallelization (soon)\n\n You can try it: pip install furax, bearing in mind that the library is actively developed and currently in a refactoring phase."
+    "text": "Motivations and Goals\n\nInverse problems\nOpen source: https://github.com/CMBSciPol/furax\n\n\n\nModularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach\nJAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers\nFramework for robust B-mode analysis\nAble to handle SO- and S4-like data sets volumes, Compatibility with TOAST\nNon-ideal optical components\n1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)\nMulti-GPU parallelization (soon)\n\nYou can try it: pip install furax, bearing in mind that the library is actively developed and currently in a refactoring phase."
   },
   {
     "objectID": "iap2024/index.html#furax-pytrees",

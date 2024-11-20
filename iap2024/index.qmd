@@ -40,6 +40,9 @@ logo1 : '
 
 ## FURAX Library
 
+<br>
+<br>
+
 :::{.solutionbox}
 
 ::::{.solutionbox-body style="font-size: 22px; border-radius: 10px; border: 2px solid #521463;"}
@@ -47,7 +50,7 @@ logo1 : '
 - <span style="color:#521463; font-size: 28px;">**Motivations and Goals**</span>: Why and for what FURAX ?
 <br />
 <br />
-- <span style="color:#521463; font-size: 28px;">**FURAX Operators**</span>: Presentation of the FURAX building blocks: the Operators.
+- <span style="color:#521463; font-size: 28px;">**FURAX Bulding Blocks**</span>: Presentation of the FURAX PyTrees and Operators.
 <br />
 <br />
 - <span style="color:#521463; font-size: 28px;">**Optimizations**</span>: High-level algebraic reductions with FURAX.
@@ -60,8 +63,6 @@ logo1 : '
 
 
 ## Motivations and Goals
-
-<br>
 
 - Inverse problems
 - Open source: [https://github.com/CMBSciPol/furax](https://github.com/CMBSciPol/furax)
@@ -76,7 +77,6 @@ logo1 : '
 - 1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)
 - Multi-GPU parallelization (soon)
 
-<br>
 You can try it: `pip install furax`, bearing in mind that the library is actively developed and currently in a refactoring phase.
 
 

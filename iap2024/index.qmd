@@ -690,7 +690,8 @@ estimate = L(data)
 
 ::::{.solutionbox-body style="font-size: 20px;"}
 
-Can be extended & complexified easily!.
+Can be extended & complexified easily!
+
 - non-ideal components
 - parametric data model
 
@@ -713,7 +714,7 @@ Credit: Simon Biquart
 
 ![](assets/CMB/input.png){fig-align="center" width="70%"}
 
-![](assets/Symboles/down_arrow.svg){fig-align="center" width="5%"}
+![](assets/Symboles/down_arrow.svg){fig-align="center" width="15px"}
 
 ![](assets/CMB/output.png){fig-align="center" width="70%"}
 
@@ -779,7 +780,7 @@ Credit: Ema Tsang King Sang
 
 ::: {.fragment fragment-index=1}
 
-  - **Dust**: Emission from galactic dust adds significant noise to the CMB, particularly affecting polarization measurements.
+- **Dust**: Emission from galactic dust adds significant noise to the CMB, particularly affecting polarization measurements.
 
 :::
 
@@ -928,8 +929,7 @@ def negative_log_prob(params, d):
              params['BETA_S'])
 
   x = (A.T @ invN)(d)
-  l = jax.tree.map(lambda a, b: a @ b, x, (A.T @ invN @ A).I(x))\
-                       S
+  l = jax.tree.map(lambda a, b: a @ b, x, (A.T @ invN @ A).I(x))
   summed_log_prob = jax.tree.reduce(operator.add, l)
 
   return -summed_log_prob
@@ -982,6 +982,7 @@ For the Simons Observatory, characterize the observed atmospheric template from 
 ![](assets/atm/atm-template.png){fig-align="center" width="100%"}
 
 ### Data Model
+Atmospheric time-ordered data recorded at two frequencies:
 $$
 d_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
 $$
@@ -1007,8 +1008,6 @@ $$
 :::
 
 :::
-
-- Atmospheric time-ordered data recorded by our telescope at two frequencies: $d_{\text{atm}}$
 
 - Mixing matrix
 $\mathbf{A} =

@@ -1000,7 +1000,7 @@ d_{\nu, i, t} = \int_{\textrm{BP}_\nu} d\nu' \mathbf{M}^{(\gamma)}_{\nu', i, t, 
 <div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="1">
 <h4 id="creating-a-mixing-matrix-operator-for-sed-evaluation">Creating a Mixing Matrix Operator for SED evaluation</h4>
-<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a><span class="im">from</span> furax.obs.operators.seds <span class="im">import</span> <span class="op">\</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a><span class="im">from</span> furax.obs.operators <span class="im">import</span> <span class="op">\</span></span>
 <span id="cb11-2"><a></a>  CMBOperator, DustOperator, SynchrotronOperator</span>
 <span id="cb11-3"><a></a></span>
 <span id="cb11-4"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>

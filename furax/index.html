@@ -247,8 +247,8 @@
 <span id="cb1-3"><a></a>  <span class="st">'dust'</span>: HealpixLandscape(NSIDE, <span class="st">'IQU'</span>).normal(key2),</span>
 <span id="cb1-4"><a></a>  <span class="st">'synchrotron'</span>: HealpixLandscape(NSIDE, <span class="st">'IQU'</span>).normal(key3),</span>
 <span id="cb1-5"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><code>HealpixLandscape(NSIDE, 'IQU')</code> returns an instance of <code>StokesIQUPyTree</code>, which has the attributes <code>i</code>, <code>q</code> and <code>u</code> that store the JAX arrays of the Stokes components.</p>
-<p>Also available are <code>StokesIPyTree</code>, <code>StokesQUPyTree</code> and <code>StokesIQUVPyTree</code>.</p>
+<p><code>HealpixLandscape(NSIDE, 'IQU')</code> returns an instance of <code>StokesIQU</code>, which has the attributes <code>i</code>, <code>q</code> and <code>u</code> that store the JAX arrays of the Stokes components.</p>
+<p>Also available are <code>StokesI</code>, <code>StokesQU</code> and <code>StokesIQUV</code>.</p>
 <p><br></p>
 <p>PyTree are then used by the FURAX Operators:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="co"># Given an acquisition H:</span></span>
@@ -486,7 +486,7 @@
 <ul>
 <li><span class="math inline">\(a^2 = a \times a\)</span>, <span class="math inline">\(a^3 = a \times a \times a\)</span></li>
 <li><span class="math inline">\(a / b = a\)</span>&gt;&gt;<span class="math inline">\(\log_2 b\)</span> if b is a power of 2</li>
-<li><span class="math inline">\(a \mod b = a \&amp; (b - 1)\)</span> if b is a power of 2</li>
+<li><span class="math inline">\(a\mod b = a \&amp; (b - 1)\)</span> if b is a power of 2</li>
 </ul>
 </div>
 </div>
@@ -1000,8 +1000,8 @@ d_{\nu, i, t} = \int_{\textrm{BP}_\nu} d\nu' \mathbf{M}^{(\gamma)}_{\nu', i, t, 
 <div class="column" style="width:50%;">
 <div class="fragment" data-fragment-index="1">
 <h4 id="creating-a-mixing-matrix-operator-for-sed-evaluation">Creating a Mixing Matrix Operator for SED evaluation</h4>
-<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a><span class="im">from</span> furax.seds <span class="im">import</span> <span class="op">\</span></span>
-<span id="cb11-2"><a></a>  CMBOperator,DustOperator, SynchrotronOperator</span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a><span class="im">from</span> furax.obs.operators.seds <span class="im">import</span> <span class="op">\</span></span>
+<span id="cb11-2"><a></a>  CMBOperator, DustOperator, SynchrotronOperator</span>
 <span id="cb11-3"><a></a></span>
 <span id="cb11-4"><a></a><span class="kw">def</span> make_A(TEMP_D , BETA_D , BETA_S):</span>
 <span id="cb11-5"><a></a>  cmb <span class="op">=</span> CMBOperator(nu, in_structure)</span>
@@ -1120,21 +1120,21 @@ d_{\text{atm}} = \mathbf{A}(\text{PWV}) \mathbf{P}(w_x, w_y) s_{\text{atm}} + n
 <span id="cb13-3"><a></a>    P_single_freq <span class="op">=</span> pointing_matrix_single_freq(detector_pointings_t, t_obs, n_detectors, z_atm, d_pix_sim, N_pix_sim, w_vec)</span>
 <span id="cb13-4"><a></a>    P <span class="op">=</span> BlockColumnOperator({‘<span class="dv">93</span>’: P_single_freq, ‘<span class="dv">145</span>’: P_single_freq})</span>
 <span id="cb13-5"><a></a>    <span class="co"># MIXING matrix: (shape: (n_detectors * N_obs * n_freq) x (n_detectors * N_obs * n_freq))</span></span>
-<span id="cb13-6"><a></a>    A_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb13-6"><a></a>    A_block_structure <span class="op">=</span> StokesI.structure_for((n_detectors,N_obs))</span>
 <span id="cb13-7"><a></a>    A_93 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_93)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
 <span id="cb13-8"><a></a>    A_145 <span class="op">=</span> HomothetyOperator(atm_emission(PWV, mu_145)<span class="op">/</span>atm_emission(PWV, mu_93), in_structure<span class="op">=</span>A_block_structure)</span>
 <span id="cb13-9"><a></a>    A <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: A_93, ‘<span class="dv">145</span>’: A_145})</span>
 <span id="cb13-10"><a></a>    <span class="co"># COMPOSITION matrix: mixing matrix @ pointing matrix (shape: (n_detectors * N_obs * n_freq) x N_pix)</span></span>
 <span id="cb13-11"><a></a>    C <span class="op">=</span> A <span class="op">@</span> P</span>
 <span id="cb13-12"><a></a>    <span class="co"># NOISE covariance matrix (shape: (n_det x N_obs x n_freq) x (n_det x N_obs x n_freq))</span></span>
-<span id="cb13-13"><a></a>    N_block_structure <span class="op">=</span> StokesIPyTree.structure_for((n_detectors,N_obs))</span>
+<span id="cb13-13"><a></a>    N_block_structure <span class="op">=</span> StokesI.structure_for((n_detectors,N_obs))</span>
 <span id="cb13-14"><a></a>    N_93 <span class="op">=</span> HomothetyOperator(noise_variance_93, in_structure<span class="op">=</span>N_block_structure)</span>
 <span id="cb13-15"><a></a>    N_145 <span class="op">=</span> HomothetyOperator(noise_variance_145, in_structure<span class="op">=</span>N_block_structure)</span>
 <span id="cb13-16"><a></a>    N <span class="op">=</span> BlockDiagonalOperator({‘<span class="dv">93</span>’: N_93, ‘<span class="dv">145</span>’: N_145})</span>
 <span id="cb13-17"><a></a>    <span class="co"># Spectral likelihood computation:</span></span>
 <span id="cb13-18"><a></a>    core_op <span class="op">=</span> (C.T <span class="op">@</span> N.I <span class="op">@</span> C).I</span>
 <span id="cb13-19"><a></a>    full_op <span class="op">=</span> N.I <span class="op">@</span> C <span class="op">@</span> core_op <span class="op">@</span> C.T <span class="op">@</span> N.I</span>
-<span id="cb13-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesIPyTree(d_atm) <span class="op">@</span> StokesIPyTree(full_op(d_atm))</span>
+<span id="cb13-20"><a></a>    S <span class="op">=</span> <span class="op">-</span> StokesI(d_atm) <span class="op">@</span> StokesI(full_op(d_atm))</span>
 <span id="cb13-21"><a></a>    <span class="cf">return</span> S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="solutionbox">
 <div class="solutionbox-body" style="font-size: 18px;">

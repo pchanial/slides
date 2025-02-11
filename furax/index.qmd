@@ -2,7 +2,7 @@
 title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
 
 author:
-  - "Pierre Chanial, Wassim Kabalan, Simon Biquart"
+  - "Pierre Chanial, Wassim Kabalan, Simon Biquart, Wuhyun Sohn"
 
 format:
   revealjs:
@@ -158,7 +158,8 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `HomothetyOperator`             |             |
 | `DiagonalOperator`              |             |
 | `BroadcastDiagonalOperator`     | Non-square operator for broadcasting |
-| `TensorOperator`    | For dense matrix operations |
+| `TensorOperator`                | For dense matrix operations |
+| `TreeOperator`                  | For matrix-as-tree operations |
 | `IndexOperator`                 | Can be used for projecting skies onto time-ordered series|
 | `MoveAxisOperator`              |             |
 | `ReshapeOperator`               |             |

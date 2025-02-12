@@ -2,7 +2,7 @@
 title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
 
 author:
-  - "Pierre Chanial, Wassim Kabalan, Simon Biquart, Wuhyun Sohn"
+  - "Pierre Chanial, Wassim Kabalan, Simon Biquard, Wuhyun Sohn"
 
 format:
   revealjs:

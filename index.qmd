@@ -10,4 +10,4 @@ format:
 
 ## Presentations
 
-[FURAX - CMB France 2025](2025cmbfrance/)
+[FURAX - CMB France 2025](2025-cmb-france/)

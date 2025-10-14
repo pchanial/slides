@@ -1,0 +1,569 @@
+---
+title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
+
+author:
+  - "Pierre Chanial, Wassim Kabalan, Simon Biquart"
+
+format:
+  revealjs:
+    theme: [default, css/custom.scss]
+    incremental: false   
+    transition: slide
+    background-transition: slide
+    presentation-size: max-scale
+    highlight-style: github
+    slide-number: true
+    template-partials:
+      - css/title-slide.html
+output: revealjs
+
+title-slide-attributes:
+  data-background-image: "assets/Wallpaper-datacenter-tetris.png"
+  data-background-size: fill
+  data-background-opacity: "0.2"
+
+
+logo1 : '
+<div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
+  <img src="assets/Logos/Furax_logo_transparent.png" style="width: 25%;"/>
+  <img src="assets/Logos/JaxLogo.png" style="width: 15%;"/>
+  <img src="assets/Logos/Python.png" style="width: 20%;"/>
+</div>
+<div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
+  <img src="assets/Logos/APC.png" style="width: 15%;"/>
+  <img src="assets/Logos/scipol.png" style="width: 15%;"/>
+  <img src="assets/Logos/ERC.svg" style="width: 15%;"/>
+  <img src="assets/Logos/CNRS.svg" style="width: 15%;"/>
+</div>
+'
+---
+
+## FURAX Library
+
+<br>
+<br>
+
+:::{.solutionbox}
+
+::::{.solutionbox-body style="font-size: 22px; border-radius: 10px; border: 2px solid #521463;"}
+
+- <span style="color:#521463; font-size: 28px;">**Motivations and Goals**</span>: Why and for what FURAX ?
+<br />
+<br />
+- <span style="color:#521463; font-size: 28px;">**FURAX Bulding Blocks**</span>: Presentation of the FURAX PyTrees and Operators.
+<br />
+<br />
+- <span style="color:#521463; font-size: 28px;">**Optimizations**</span>: High-level algebraic reductions with FURAX.
+<br />
+<br />
+- <span style="color:#521463; font-size: 28px;">**CMB Applications**</span>: From map-making to component separation.
+::::
+
+:::
+
+
+## Motivations and Goals
+
+- Inverse problems
+- Open source: [https://github.com/CMBSciPol/furax](https://github.com/CMBSciPol/furax)
+
+<br>
+
+- Modularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach
+- JAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers
+- Framework for robust B-mode analysis
+- Able to handle SO- and S4-like data sets volumes, Compatibility with TOAST 
+- Non-ideal optical components
+- 1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)
+- Multi-GPU parallelization (soon)
+
+You can try it: `pip install furax`, bearing in mind that the library is actively developed and currently in a refactoring phase.
+
+
+
+# FURAX Building Blocks {style="font-size: 35px; align=center;"}
+
+
+## FURAX PyTrees
+
+
+<br>
+<br>
+
+FURAX relies on PyTrees to represent the data. For example, for component separation analysis, we can write the generalized sky as a nested PyTree
+
+```python
+sky = {
+  'cmb': HealpixLandscape(NSIDE, 'IQU').normal(key1),
+  'dust': HealpixLandscape(NSIDE, 'IQU').normal(key2),
+  'synchrotron': HealpixLandscape(NSIDE, 'IQU').normal(key3),
+}
+```
+
+`HealpixLandscape(NSIDE, 'IQU')` returns an instance of `StokesIQUPyTree`, which has the attributes `i`, `q` and `u` that store the JAX arrays of the Stokes components.
+
+Also available are `StokesIPyTree`, `StokesQUPyTree` and `StokesIQUVPyTree`.
+
+<br>
+
+PyTree are then used by the FURAX Operators:
+
+```python
+# Given an acquisition H:
+tod = H(sky)
+```
+
+
+## FURAX Operators
+
+<br>
+
+The base class `AbstractLinearOperator` provides a default implementation for the usual linear algebra operations.
+
+<br>
+
+::: {style="font-size: 18px;"}
+
+| Operation   | FURAX | Comment |
+|-------------|-------|---------|
+| Addition    | `A + B` |   |
+| Composition | `A @ B` |   |
+| Multiplication by scalar | `k * A` | Returns the composition of a HomothetyOperator and A|
+| Transpose   | `A.T`  |  Through JAX autodiff, but can be overriden |
+| Inverse     | `A.I` | By default, the CG solver is used, but it can be overriden or configured using a context manager |
+| Block Assembly | `BlockColumnOperator([A, B])` `BlockDiagonalOperator([A, B])` `BlockRowOperator([A, B])` | Handle any PyTree of Operators: `Block*Operator({'a': A, 'b': B})`|
+| Flattened dense matrix | `A.as_matrix()` | |
+| Algebraic reduction | `A.reduce()` | |
+
+: {tbl-colwidths="[25,35,40]"}
+
+:::
+
+## FURAX Operators {style="font-size: 18px;"}
+
+<br/>
+<br/>
+
+::: {.columns}
+
+::: {.column width="60%"}
+
+::: {.solutionbox}
+
+:::{.solutionbox-body style="font-size: 17px;"}
+
+| Generic Operator                | Description |
+|---------------------------------|-------------|
+| `IdentityOperator`              |             |
+| `HomothetyOperator`             |             |
+| `DiagonalOperator`              |             |
+| `BroadcastDiagonalOperator`     | Non-square operator for broadcasting |
+| `TensorOperator`    | For dense matrix operations |
+| `IndexOperator`                 | Can be used for projecting skies onto time-ordered series|
+| `MoveAxisOperator`              |             |
+| `ReshapeOperator`               |             |
+| `RavelOperator`                 |             |
+| `SymmetricBandToeplitzOperator` | Methods: direct, FFT, overlap and save |
+| `Block*Operator` | Block assembly operators (column, diagonal, row)|
+
+:::
+
+:::
+
+
+:::
+
+::: {.column width="40%"}
+
+::: {.solutionbox}
+
+:::{.solutionbox-body style="font-size: 17px;"}
+
+
+| Applied Operator          | Description |
+|---------------------------|-------------|
+| `QURotationOperator`      |             |
+| `HWPOperator`             | Ideal HWP   |
+| `LinearPolarizerOperator` | Ideal linear polarizer |
+| `CMBOperator`             | Parametrized CMB SED |
+| `DustOperator`            | Parametrized dust SED |
+| `SynchrotronOperator`     | Parametrized synchrotron SED |
+
+:::
+
+:::
+
+:::
+
+:::
+
+
+# Multi-level Optimizations {style="font-size: 35px;"}
+
+
+## JAX GPU Compilation Chain
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![From the Python code to the GPU-native code](assets/jax-compilation-chain.png){.nostrech fig-align="center" width="100%"}
+
+## XLA simplifications
+
+<br>
+
+::::: {.columns}
+
+:::: {.column width="50%"}
+
+
+::: {.solutionbox}
+
+::: {.solutionbox-header}
+
+**Mathematical identities**
+
+:::
+
+:::{.solutionbox-body style="font-size: 20px;"}
+
+- $a\times 0 = a - a = 0$
+- $a - 0 = a\times 1 = a / 1 = a^1 = a$
+- $a^{-1} = 1/a$, $a^{1/2} = \sqrt{a}$
+- $-(-x) = x$
+- $(-a)(-b) = ab$
+- $ac + bc = (a+b)c$
+- $a / const = a \times (1 / const)$
+- $(a + c1) + (b + c2) =  a + b + (c1 + c2)$
+- $(a / b) / (c / d) = ad / bc$
+- $\ln e^x = x$
+- $\exp a \exp b = \exp(a+b)$
+- $a / \exp b = a \exp(-b)$
+
+:::
+
+:::
+
+::::
+
+:::: {.column width="50%"}
+
+::: {.solutionbox}
+
+:::{.solutionbox-header}
+
+**Array manipulations**
+
+:::
+
+:::{.solutionbox-body style="font-size: 20px;"}
+
+- slicing
+- reshaping
+- broadcasting
+- transposition
+- bitcast
+- copies
+
+:::
+
+:::
+
+
+:::{.solutionbox}
+
+:::{.solutionbox-header}
+
+**Ol' Digger's tricks**
+
+:::
+
+:::{.solutionbox-body style="font-size: 20px;"}
+
+- $a^2 = a \times a$, $a^3 = a \times a \times a$
+- $a / b = a$>>$\log_2 b$ if b is a power of 2
+- $a \mod b = a \& (b - 1)$ if b is a power of 2
+
+:::
+
+:::
+
+::::
+
+:::::
+
+and many more (see [xla/hlo/transforms/simplifiers/algebraic_simplifier.cc](xla/hlo/transforms/simplifiers/algebraic_simplifier.cc))
+
+
+## Dead Code Elimination (DCE)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func_dce(x):
+    unused = jnp.sin(x)
+    y = jnp.exp(x)
+    return y[0]
+```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-func-dce.png){fig-align="center" width="60%"}
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment fragment-index=2}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func_full(x):
+    return jnp.exp(x)
+
+
+
+```
+
+:::
+
+::: {.fragment fragment-index=3}
+
+![Full computation vs DCE](assets/hlo/bench-dce.png){fig-align="center" width="190%"}
+
+:::
+
+:::
+
+::::
+
+
+## XLA Common Subexpression Elimination (CSE)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```python
+import jax
+import jax.numpy as jnp
+
+@jax.jit
+def func_cse(theta):
+    a = jnp.sin(theta)
+    b = jnp.sin(theta) + 1
+    return a + b
+ ```
+
+:::{.fragment fragment-index=2}
+
+:::{.solutionbox}
+
+:::{.solutionbox-header style="font-size: 22px;"}
+
+**XLA Common Subexpression Elimination (CSE)**
+
+:::
+
+::::{.solutionbox-body style="font-size: 20px;"}
+
+- **Definition**: CSE identifies and eliminates duplicate computations within a function to optimize performance.
+
+- **Example in Code**:
+  - Without CSE: `jnp.sin(theta)` computed twice.
+  - After CSE: Shared computation across `a` and `b`.
+
+- **Benefits**:
+  - Reduces redundant computation.
+  - Enhances runtime efficiency and memory usage.
+
+::::
+
+:::
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%" style="border: 2px solid #000000;"}
+
+:::
+
+:::
+
+::::
+
+
+## JAX GPU Compilation Chain with FURAX
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![From the Python code to the GPU-native code](assets/jax-compilation-chain-with-furax.png){fig-align="center" width="120%"}
+
+
+## FURAX Algebraic Reductions: Composition of Rotations
+
+
+```python
+import jax
+import jax.numpy as jnp
+
+def rot(x, y, theta):
+    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)
+    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)
+    return rotated_x, rotated_y
+
+@jax.jit
+def func(x, y, theta1, theta2):
+    return rot(x, y, theta=theta1 + theta2)
+  ```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-rot-furax.png){fig-align="center" width="60%"}
+
+:::
+
+
+## FURAX Algebraic Reductions: Composition of Rotations
+
+
+```python
+import jax
+import jax.numpy as jnp
+
+def rot(x, y, theta):
+    rotated_x = x * jnp.cos(theta) - y * jnp.sin(theta)
+    rotated_y = x * jnp.sin(theta) + y * jnp.cos(theta)
+    return rotated_x, rotated_y
+
+@jax.jit
+def func(x, y, theta1, theta2):
+    x, y = rot(x, y, theta=theta1)
+    return rot(x, y, theta=theta2)
+  ```
+
+::: {.fragment fragment-index=1}
+
+![Compiled StableHLO representation](assets/hlo/hlo-rot.png){fig-align="center" width="60%"}
+
+:::
+
+
+## FURAX Algebraic Reductions: Instrument Acquisition
+
+<br>
+
+Given this modeling of the acquisition, using an ideal linear polarizer and an ideal half wave plate:
+$$
+\mathbf{H} = \mathbf{C}_{\textrm{LP}} \, \mathbf{R}_{2\theta} \, \mathbf{R}_{-2\phi} \, \mathbf{C}_{\textrm{HWP}} \, \mathbf{R}_{2\phi} \, \mathbf{R}_{2\psi} \, \mathbf{P}
+$$
+with
+
+- $\theta$: detector polarization angle
+- $\phi$: HWP rotation angle
+- $\psi$: telescope rotation angle
+
+FURAX reduces this expression to:
+
+$$
+\mathbf{H} = \mathbf{C}_{\textrm{LP}} \, \mathbf{R}_{-2\theta + 4\phi + 2\psi}\, \mathbf{P}
+$$
+
+
+## FURAX Algebraic Reductions: Pointing Matrix
+
+<br>
+
+::: {style="font-size: 20px;"}
+
+When the time-time noise covariance matrix $\mathbf{N}$ is diagonal and $\mathbf{P}$ is a "one-to-one" intensity projection matrix:
+
+$$
+\mathbf{P} =
+\begin{bmatrix}
+0 & \cdots & 0 & 1 & 0 & \cdots & 0 \\
+0 & 1 & 0 & \cdots & 0 & 0 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+1 & 0 & \cdots & 0 & 0 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+0 & 0 & \cdots & 0 & 1 & 0 & \cdots & 0 \\
+\end{bmatrix},
+$$
+
+<br/>
+<br/>
+
+ - the product $\mathbf{P}^\top \mathbf{N}^{-1} \mathbf{P}$ is diagonal and can therefore be easily inverted (for pixel-pixel covariance matrix or preconditioning).
+ - Each term is related to the number of noise-weighted times a pixel of the map has been observed.
+
+ - For IQU maps, the product is block diagonal, with 3x3 blocks that can also be easily inverted.
+
+ - By adding a **rule** for this operation, we've seen an performance improvement by more than a **factor of 10** in the forward application (WIP, currently only for $\mathbf{N}$ scalar).
+
+:::
+
+
+## FURAX Algebraic Reductions: Block Assembly
+
+::: {style="font-size: 15px;"}
+
+<br>
+<br>
+
+| Operation | Reduction |
+|---------------------------------|-------------|
+| `BlockDiagonalOperator([D1, D2]) @ BlockColumnOperator([C1, C2])`              | `BlockColumnOperator([D1 @ C1, D2 @ C2])`|
+| `BlockRowOperator([R1, R2]) @ BlockDiagonalOperator([D1, D2])`              | `BlockRowOperator([R1 @ D1, R2 @ D2])`|
+| `BlockRowOperator([R1, R2]) @ BlockColumnOperator([C1, C2])`              | `R1 @ C1 + R2 @ C2`|
+
+: {tbl-colwidths="[60,40]"}
+
+:::
+
+<br>
+<br>
+
+#### Practical use case:
+
+Given two observations
+
+$$
+\mathbf{P} =
+\begin{bmatrix}
+\mathbf{P}_1 \\
+\mathbf{P}_2
+\end{bmatrix}, \quad
+\mathbf{N}^{-1} =
+\begin{bmatrix}
+\mathbf{N}_1^{-1} & 0 \\
+0 & \mathbf{N}_2^{-1}
+\end{bmatrix},
+$$
+
+The combination is reduced to
+$$
+\mathbf{P}^\top \mathbf{N}^{-1} \mathbf{P} = \mathbf{P}_1^\top \mathbf{N}_1^{-1} \mathbf{P}_1^{\,} + \mathbf{P}_2^\top \mathbf{N}_2^{-1} \mathbf{P}_2^{\,}.
+$$

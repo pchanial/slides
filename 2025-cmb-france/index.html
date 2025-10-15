@@ -211,7 +211,7 @@
 <li><span style="color:#521463; font-size: 28px;"><strong>Motivations and Goals</strong></span>: Why and for what FURAX ? <br> <br></li>
 <li><span style="color:#521463; font-size: 28px;"><strong>FURAX Bulding Blocks</strong></span>: Presentation of the FURAX PyTrees and Operators. <br> <br></li>
 <li><span style="color:#521463; font-size: 28px;"><strong>Optimizations</strong></span>: High-level algebraic reductions with FURAX. <br> <br></li>
-<li><span style="color:#521463; font-size: 28px;"><strong>CMB Applications</strong></span>: From map-making to component separation.</li>
+<li><span style="color:#521463; font-size: 28px;"><strong>CMB Applications</strong></span>: From map-making to component separation (see today’s talks).</li>
 </ul>
 </div>
 </div>
@@ -232,7 +232,7 @@
 <li>1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)</li>
 <li>Multi-GPU parallelization (soon)</li>
 </ul>
-<p>You can try it: <code>pip install furax</code>, bearing in mind that the library is actively developed and currently in a refactoring phase.</p>
+<p>You can try it: <code>pip install furax</code>, bearing in mind that the library is actively developed.</p>
 </section>
 <section>
 <section id="furax-building-blocks" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
@@ -457,6 +457,8 @@
 <li>several map-makers</li>
 <li>TOAST interface</li>
 <li>SOTODLib interface</li>
+<li>spectral likelihood</li>
+<li>WCS: Healpix &amp; Plate carrée</li>
 <li>ability to pad observations (JAX constraint)</li>
 </ul>
 </section></section>
@@ -572,6 +574,31 @@
 <h2>XLA Common Subexpression Elimination (CSE)</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
+<div class="solutionbox">
+<div class="solutionbox-header" style="font-size: 22px;">
+<p><strong>XLA Common Subexpression Elimination (CSE)</strong></p>
+</div>
+<div class="solutionbox-body" style="font-size: 20px;">
+<ul>
+<li><p><strong>Definition</strong>: CSE identifies and eliminates duplicate computations within a function to optimize performance.</p></li>
+<li><p><strong>Benefits</strong>:</p>
+<ul>
+<li>Reduces redundant computation.</li>
+<li>Enhances runtime efficiency and memory usage.</li>
+</ul></li>
+</ul>
+<div class="fragment" data-fragment-index="1">
+<ul>
+<li><strong>Example in Code</strong>:
+<ul>
+<li>Without CSE: <code>jnp.sin(theta)</code> computed twice.</li>
+<li>After CSE: Shared computation across <code>a</code> and <code>b</code>.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="im">import</span> jax</span>
 <span id="cb5-2"><a></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
 <span id="cb5-3"><a></a></span>
@@ -580,30 +607,9 @@
 <span id="cb5-6"><a></a>    a <span class="op">=</span> jnp.sin(theta)</span>
 <span id="cb5-7"><a></a>    b <span class="op">=</span> jnp.sin(theta) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb5-8"><a></a>    <span class="cf">return</span> a <span class="op">+</span> b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="fragment" data-fragment-index="2">
-<div class="solutionbox">
-<div class="solutionbox-header" style="font-size: 22px;">
-<p><strong>XLA Common Subexpression Elimination (CSE)</strong></p>
-</div>
-<div class="solutionbox-body" style="font-size: 20px;">
-<ul>
-<li><p><strong>Definition</strong>: CSE identifies and eliminates duplicate computations within a function to optimize performance.</p></li>
-<li><p><strong>Example in Code</strong>:</p>
-<ul>
-<li>Without CSE: <code>jnp.sin(theta)</code> computed twice.</li>
-<li>After CSE: Shared computation across <code>a</code> and <code>b</code>.</li>
-</ul></li>
-<li><p><strong>Benefits</strong>:</p>
-<ul>
-<li>Reduces redundant computation.</li>
-<li>Enhances runtime efficiency and memory usage.</li>
-</ul></li>
-</ul>
-</div>
-</div>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="fragment" data-fragment-index="1">
+<div class="fragment" data-fragment-index="2">
 <div class="quarto-figure quarto-figure-center" style="border: 2px solid #000000;">
 <figure>
 <p><img data-src="assets/hlo/hlo-func-cse.png" style="width:60.0%"></p>
@@ -753,6 +759,15 @@
 <p>The combination is reduced to <span class="math display">\[
 \mathbf{P}^\top \mathbf{N}^{-1} \mathbf{P} = \mathbf{P}_1^\top \mathbf{N}_1^{-1} \mathbf{P}_1^{\,} + \mathbf{P}_2^\top \mathbf{N}_2^{-1} \mathbf{P}_2^{\,}.
 \]</span></p>
+</section>
+<section id="next-steps" class="slide level2">
+<h2>Next steps</h2>
+<p><br> <br> <br></p>
+<ul>
+<li>Full processing of several observation using padding</li>
+<li>Distribution GPU</li>
+<li>Other experiment (QUBIC ?)</li>
+</ul>
 
 
 </section></section>

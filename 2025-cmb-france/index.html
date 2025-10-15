@@ -222,6 +222,7 @@
 <h2>Motivations and Goals</h2>
 <ul>
 <li>Inverse problems</li>
+<li>Maintain the mathematical formulation of the problem</li>
 <li>Open source: <a href="https://github.com/CMBSciPol/furax">https://github.com/CMBSciPol/furax</a></li>
 </ul>
 <p><br></p>
@@ -231,10 +232,9 @@
 <li>Framework for robust B-mode analysis</li>
 <li>Able to handle SO- and S4-like data sets volumes, Compatibility with TOAST</li>
 <li>Non-ideal optical components</li>
-<li>1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)</li>
-<li>Multi-GPU parallelization (soon)</li>
+<li>Multi-GPU parallelization</li>
 </ul>
-<p>You can try it: <code>pip install furax</code>, bearing in mind that the library is actively developed.</p>
+<p>You can try it: <code>pip install furax</code> or read the documentation <a href="https://furax.readthedocs.io">https://furax.readthedocs.io</a>.</p>
 </section>
 <section>
 <section id="furax-building-blocks" class="title-slide slide level1 center" style="font-size: 35px; align=center;">
@@ -244,7 +244,7 @@
 <section id="furax-pytrees" class="slide level2">
 <h2>FURAX PyTrees</h2>
 <p><br> <br></p>
-<p>FURAX relies on PyTrees to represent the data. For example, for component separation analysis, we can write the generalized sky as a nested PyTree</p>
+<p>FURAX relies on PyTrees to represent the data and manipulate the data without overhead For example, for component separation analysis, we can write the generalized sky as a nested PyTree</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>sky <span class="op">=</span> {</span>
 <span id="cb1-2"><a></a>  <span class="st">'cmb'</span>: HealpixLandscape(NSIDE, <span class="st">'IQU'</span>).normal(key1),</span>
 <span id="cb1-3"><a></a>  <span class="st">'dust'</span>: HealpixLandscape(NSIDE, <span class="st">'IQU'</span>).normal(key2),</span>
@@ -253,7 +253,7 @@
 <p><code>HealpixLandscape(NSIDE, 'IQU')</code> returns an instance of <code>StokesIQUPyTree</code>, which has the attributes <code>i</code>, <code>q</code> and <code>u</code> that store the JAX arrays of the Stokes components.</p>
 <p>Also available are <code>StokesIPyTree</code>, <code>StokesQUPyTree</code> and <code>StokesIQUVPyTree</code>.</p>
 <p><br></p>
-<p>PyTree are then used by the FURAX Operators:</p>
+<p>JAX PyTree are then used by the FURAX Operators:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="co"># Given an acquisition H:</span></span>
 <span id="cb2-2"><a></a>tod <span class="op">=</span> H(sky)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
@@ -455,13 +455,13 @@
 <section id="furax-other-components-see-next-talks" class="slide level2">
 <h2>FURAX other components (see next talks)</h2>
 <ul>
-<li>Preconditioners</li>
 <li>Several map-makers</li>
-<li>TOAST interface</li>
-<li>SOTODLib interface</li>
+<li>Preconditioners</li>
+<li>TOAST and SOTODLib data interface</li>
+<li>Component operators: CMB, synchrotron, dust and mixing matrix</li>
 <li>Spectral likelihood estimators</li>
 <li>WCS: Healpix &amp; Plate carrée</li>
-<li>Ability to pad observations (JAX constraint)</li>
+<li>Ability to pad observations (JAX constraint) to avoid re-compilations</li>
 </ul>
 </section></section>
 <section>
@@ -766,9 +766,9 @@
 <h2>Next steps</h2>
 <p><br> <br> <br></p>
 <ul>
-<li>Full processing of several observation using padding</li>
-<li>Distribution GPU</li>
-<li>Other experiment (QUBIC ?)</li>
+<li>Full processing of several observations using padding</li>
+<li>Distribution of the processing on several GPUs</li>
+<li>Because of Furax genericity, it could be applied to other experiments (QUBIC, LiteBIRD, SPT, BICEP, POLARYS, …?)</li>
 </ul>
 
 

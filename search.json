@@ -200,14 +200,14 @@
     "href": "2025-cmb-france/index.html#motivations-and-goals",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "Motivations and Goals",
-    "text": "Motivations and Goals\n\nInverse problems\nOpen source: https://github.com/CMBSciPol/furax\n\n\n\nModularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach\nJAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers\nFramework for robust B-mode analysis\nAble to handle SO- and S4-like data sets volumes, Compatibility with TOAST\nNon-ideal optical components\n1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)\nMulti-GPU parallelization (soon)\n\nYou can try it: pip install furax, bearing in mind that the library is actively developed."
+    "text": "Motivations and Goals\n\nInverse problems\nMaintain the mathematical formulation of the problem\nOpen source: https://github.com/CMBSciPol/furax\n\n\n\nModularity, extensibility, simplicity: Easy to experiment new ideas, Fail fast approach\nJAX: Differentiation, Just In Time (JIT) compilation, run the same code anywhere — on CPUs and GPUs, laptops and super-computers\nFramework for robust B-mode analysis\nAble to handle SO- and S4-like data sets volumes, Compatibility with TOAST\nNon-ideal optical components\nMulti-GPU parallelization\n\nYou can try it: pip install furax or read the documentation https://furax.readthedocs.io."
   },
   {
     "objectID": "2025-cmb-france/index.html#furax-pytrees",
     "href": "2025-cmb-france/index.html#furax-pytrees",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX PyTrees",
-    "text": "FURAX PyTrees\n \nFURAX relies on PyTrees to represent the data. For example, for component separation analysis, we can write the generalized sky as a nested PyTree\nsky = {\n  'cmb': HealpixLandscape(NSIDE, 'IQU').normal(key1),\n  'dust': HealpixLandscape(NSIDE, 'IQU').normal(key2),\n  'synchrotron': HealpixLandscape(NSIDE, 'IQU').normal(key3),\n}\nHealpixLandscape(NSIDE, 'IQU') returns an instance of StokesIQUPyTree, which has the attributes i, q and u that store the JAX arrays of the Stokes components.\nAlso available are StokesIPyTree, StokesQUPyTree and StokesIQUVPyTree.\n\nPyTree are then used by the FURAX Operators:\n# Given an acquisition H:\ntod = H(sky)"
+    "text": "FURAX PyTrees\n \nFURAX relies on PyTrees to represent the data and manipulate the data without overhead For example, for component separation analysis, we can write the generalized sky as a nested PyTree\nsky = {\n  'cmb': HealpixLandscape(NSIDE, 'IQU').normal(key1),\n  'dust': HealpixLandscape(NSIDE, 'IQU').normal(key2),\n  'synchrotron': HealpixLandscape(NSIDE, 'IQU').normal(key3),\n}\nHealpixLandscape(NSIDE, 'IQU') returns an instance of StokesIQUPyTree, which has the attributes i, q and u that store the JAX arrays of the Stokes components.\nAlso available are StokesIPyTree, StokesQUPyTree and StokesIQUVPyTree.\n\nJAX PyTree are then used by the FURAX Operators:\n# Given an acquisition H:\ntod = H(sky)"
   },
   {
     "objectID": "2025-cmb-france/index.html#furax-operators",
@@ -228,7 +228,7 @@
     "href": "2025-cmb-france/index.html#furax-other-components-see-next-talks",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX other components (see next talks)",
-    "text": "FURAX other components (see next talks)\n\nPreconditioners\nSeveral map-makers\nTOAST interface\nSOTODLib interface\nSpectral likelihood estimators\nWCS: Healpix & Plate carrée\nAbility to pad observations (JAX constraint)"
+    "text": "FURAX other components (see next talks)\n\nSeveral map-makers\nPreconditioners\nTOAST and SOTODLib data interface\nComponent operators: CMB, synchrotron, dust and mixing matrix\nSpectral likelihood estimators\nWCS: Healpix & Plate carrée\nAbility to pad observations (JAX constraint) to avoid re-compilations"
   },
   {
     "objectID": "2025-cmb-france/index.html#jax-gpu-compilation-chain",
@@ -305,6 +305,6 @@
     "href": "2025-cmb-france/index.html#next-steps",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "Next steps",
-    "text": "Next steps\n  \n\nFull processing of several observation using padding\nDistribution GPU\nOther experiment (QUBIC ?)"
+    "text": "Next steps\n  \n\nFull processing of several observations using padding\nDistribution of the processing on several GPUs\nBecause of Furax genericity, it could be applied to other experiments (QUBIC, LiteBIRD, SPT, BICEP, POLARYS, …?)"
   }
 ]

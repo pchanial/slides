@@ -2,7 +2,7 @@
 title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
 
 author:
-  - "Pierre Chanial, Artem Basyrov, Simon Biquart, Wassim Kabalan,"
+  - "Pierre Chanial, Artem Basyrov, Simon Biquard, Wassim Kabalan,"
   - "Wuhyun Sohn and the SciPol Team"
 
 format:
@@ -59,7 +59,7 @@ logo1 : '
 - <span style="color:#521463; font-size: 28px;">**Optimizations**</span>: High-level algebraic reductions with FURAX.
 <br />
 <br />
-- <span style="color:#521463; font-size: 28px;">**CMB Applications**</span>: From map-making to component separation (see today's talks).
+- <span style="color:#521463; font-size: 28px;">**CMB Applications**</span>: From map-making to component separation (see other talks).
 ::::
 
 :::
@@ -68,6 +68,7 @@ logo1 : '
 ## Motivations and Goals
 
 - Inverse problems
+- Maintain the mathematical formulation of the problem
 - Open source: [https://github.com/CMBSciPol/furax](https://github.com/CMBSciPol/furax)
 
 <br>
@@ -77,12 +78,11 @@ logo1 : '
 - Framework for robust B-mode analysis
 - Able to handle SO- and S4-like data sets volumes, Compatibility with TOAST 
 - Non-ideal optical components
-- 1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)
-- Multi-GPU parallelization (soon)
+- Multi-GPU parallelization
 
-You can try it: `pip install furax`, bearing in mind that the library is actively developed.
+You can try it: `pip install furax` or read the documentation [https://furax.readthedocs.io](https://furax.readthedocs.io).
 
-
+    
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}
 
 
@@ -92,7 +92,7 @@ You can try it: `pip install furax`, bearing in mind that the library is activel
 <br>
 <br>
 
-FURAX relies on PyTrees to represent the data. For example, for component separation analysis, we can write the generalized sky as a nested PyTree
+FURAX relies on PyTrees to represent the data and manipulate the data without overhead For example, for component separation analysis, we can write the generalized sky as a nested PyTree
 
 ```python
 sky = {
@@ -108,7 +108,7 @@ Also available are `StokesIPyTree`, `StokesQUPyTree` and `StokesIQUVPyTree`.
 
 <br>
 
-PyTree are then used by the FURAX Operators:
+JAX PyTree are then used by the FURAX Operators:
 
 ```python
 # Given an acquisition H:
@@ -190,7 +190,7 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `CMBOperator`             | Parametrized CMB SED |
 | `DustOperator`            | Parametrized dust SED |
 | `SynchrotronOperator`     | Parametrized synchrotron SED |
-| 'PointingOperator'        | On-the-fly projection matrix |
+| `PointingOperator`        | On-the-fly projection matrix |
 | `MapSpaceBeamOperator`    | Sparse Beam operator |
 | `TemplateOperator`        | For template map-making |
 
@@ -202,15 +202,15 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 :::
 
-## FURAX other components (see today's talks)
+## FURAX other components (see next talks)
 
-- preconditioners
-- several map-makers
-- TOAST interface
-- SOTODLib interface
-- spectral likelihood
+- Several map-makers
+- Preconditioners
+- TOAST and SOTODLib data interface
+- Component operators: CMB, synchrotron, dust and mixing matrix
+- Spectral likelihood estimators
 - WCS: Healpix & Plate carrée
-- ability to pad observations (JAX constraint)
+- Ability to pad observations (JAX constraint) to avoid re-compilations
 
 
 # Multi-level Optimizations {style="font-size: 35px;"}
@@ -327,7 +327,7 @@ import jax.numpy as jnp
 def func_dce(x):
     unused = jnp.sin(x)
     y = jnp.exp(x)
-    return y[0]
+    return y[:2]
 ```
 
 ::: {.fragment fragment-index=1}
@@ -591,7 +591,7 @@ $$
 <br>
 <br>
 
-- Full processing of several observation using padding
-- Distribution GPU
-- Other experiment (QUBIC ?)
+- Full processing of several observations using padding
+- Distribution of the processing on several GPUs
+- Because of Furax genericity, it could be applied to other experiments (QUBIC, LiteBIRD, SPT, BICEP, POLARYS, FOSSIL, ...?)
 

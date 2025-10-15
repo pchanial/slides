@@ -10,5 +10,5 @@ format:
 
 ## Presentations
 
-[FURAX - GDR COPHY 2024](2024-gdr-cophy/)
-[FURAX - CMB France 2025](2025-cmb-france/)
+- [FURAX - GDR COPHY 2024](2024-gdr-cophy/)
+- [FURAX - CMB France 2025](2025-cmb-france/)

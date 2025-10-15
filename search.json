@@ -179,21 +179,21 @@
     "href": "index.html",
     "title": "Pierre’s slides",
     "section": "",
-    "text": "FURAX - GDR COPHY 2024 FURAX - CMB France 2025"
+    "text": "FURAX - GDR COPHY 2024\nFURAX - CMB France 2025"
   },
   {
     "objectID": "index.html#presentations",
     "href": "index.html#presentations",
     "title": "Pierre’s slides",
     "section": "",
-    "text": "FURAX - GDR COPHY 2024 FURAX - CMB France 2025"
+    "text": "FURAX - GDR COPHY 2024\nFURAX - CMB France 2025"
   },
   {
     "objectID": "2025-cmb-france/index.html#furax-library",
     "href": "2025-cmb-france/index.html#furax-library",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Library",
-    "text": "FURAX Library\n \n\n\n\nMotivations and Goals: Why and for what FURAX ?  \nFURAX Bulding Blocks: Presentation of the FURAX PyTrees and Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation (see today’s talks)."
+    "text": "FURAX Library\n \n\n\n\nMotivations and Goals: Why and for what FURAX ?  \nFURAX Bulding Blocks: Presentation of the FURAX PyTrees and Operators.  \nOptimizations: High-level algebraic reductions with FURAX.  \nCMB Applications: From map-making to component separation (see other talks)."
   },
   {
     "objectID": "2025-cmb-france/index.html#motivations-and-goals",
@@ -221,14 +221,14 @@
     "href": "2025-cmb-france/index.html#furax-operators-1",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "FURAX Operators",
-    "text": "FURAX Operators\n\n\n\n\n\n\n\n\n\n\n\nGeneric Operator\nDescription\n\n\n\n\nIdentityOperator\n\n\n\nHomothetyOperator\n\n\n\nDiagonalOperator\n\n\n\nBroadcastDiagonalOperator\nNon-square operator for broadcasting\n\n\nTensorOperator\nFor dense matrix operations\n\n\nTreeOperator\nFor generalized matrix operations\n\n\nSumOperator\nSum along axes\n\n\nIndexOperator\nCan be used for projecting skies onto time-ordered series\n\n\nMaskOperator\nBit-encoded 0- or 1-valued mask\n\n\nMoveAxisOperator\n\n\n\nReshapeOperator\n\n\n\nRavelOperator\n\n\n\nSymmetricBandToeplitzOperator\nMethods: direct, FFT, overlap and save\n\n\nBlock*Operator\nBlock assembly operators (column, diagonal, row)\n\n\n\n\n\n\n\n\n\n\n\nApplied Operator\nDescription\n\n\n\n\nQURotationOperator\n\n\n\nHWPOperator\nIdeal HWP\n\n\nLinearPolarizerOperator\nIdeal linear polarizer\n\n\nCMBOperator\nParametrized CMB SED\n\n\nDustOperator\nParametrized dust SED\n\n\nSynchrotronOperator\nParametrized synchrotron SED\n\n\n‘PointingOperator’\nOn-the-fly projection matrix\n\n\nMapSpaceBeamOperator\nSparse Beam operator\n\n\nTemplateOperator\nFor template map-making"
+    "text": "FURAX Operators\n\n\n\n\n\n\n\n\n\n\n\nGeneric Operator\nDescription\n\n\n\n\nIdentityOperator\n\n\n\nHomothetyOperator\n\n\n\nDiagonalOperator\n\n\n\nBroadcastDiagonalOperator\nNon-square operator for broadcasting\n\n\nTensorOperator\nFor dense matrix operations\n\n\nTreeOperator\nFor generalized matrix operations\n\n\nSumOperator\nSum along axes\n\n\nIndexOperator\nCan be used for projecting skies onto time-ordered series\n\n\nMaskOperator\nBit-encoded 0- or 1-valued mask\n\n\nMoveAxisOperator\n\n\n\nReshapeOperator\n\n\n\nRavelOperator\n\n\n\nSymmetricBandToeplitzOperator\nMethods: direct, FFT, overlap and save\n\n\nBlock*Operator\nBlock assembly operators (column, diagonal, row)\n\n\n\n\n\n\n\n\n\n\n\nApplied Operator\nDescription\n\n\n\n\nQURotationOperator\n\n\n\nHWPOperator\nIdeal HWP\n\n\nLinearPolarizerOperator\nIdeal linear polarizer\n\n\nCMBOperator\nParametrized CMB SED\n\n\nDustOperator\nParametrized dust SED\n\n\nSynchrotronOperator\nParametrized synchrotron SED\n\n\nPointingOperator\nOn-the-fly projection matrix\n\n\nMapSpaceBeamOperator\nSparse Beam operator\n\n\nTemplateOperator\nFor template map-making"
   },
   {
-    "objectID": "2025-cmb-france/index.html#furax-other-components-see-todays-talks",
-    "href": "2025-cmb-france/index.html#furax-other-components-see-todays-talks",
+    "objectID": "2025-cmb-france/index.html#furax-other-components-see-next-talks",
+    "href": "2025-cmb-france/index.html#furax-other-components-see-next-talks",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
-    "section": "FURAX other components (see today’s talks)",
-    "text": "FURAX other components (see today’s talks)\n\npreconditioners\nseveral map-makers\nTOAST interface\nSOTODLib interface\nspectral likelihood\nWCS: Healpix & Plate carrée\nability to pad observations (JAX constraint)"
+    "section": "FURAX other components (see next talks)",
+    "text": "FURAX other components (see next talks)\n\nPreconditioners\nSeveral map-makers\nTOAST interface\nSOTODLib interface\nSpectral likelihood estimators\nWCS: Healpix & Plate carrée\nAbility to pad observations (JAX constraint)"
   },
   {
     "objectID": "2025-cmb-france/index.html#jax-gpu-compilation-chain",

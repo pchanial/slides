@@ -2,7 +2,7 @@
 title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
 
 author:
-  - "Pierre Chanial, Wassim Kabalan, Simon Biquart"
+  - "Pierre Chanial, Wassim Kabalan, Simon Biquart, Wuhyun Sohn, Artem Basyrov"
 
 format:
   revealjs:
@@ -56,7 +56,7 @@ logo1 : '
 - <span style="color:#521463; font-size: 28px;">**Optimizations**</span>: High-level algebraic reductions with FURAX.
 <br />
 <br />
-- <span style="color:#521463; font-size: 28px;">**CMB Applications**</span>: From map-making to component separation.
+- <span style="color:#521463; font-size: 28px;">**CMB Applications**</span>: From map-making to component separation (see today's talks).
 ::::
 
 :::
@@ -77,8 +77,7 @@ logo1 : '
 - 1st steps: “max-L” and “template” map-making (following MAPPRAISER’s formalism)
 - Multi-GPU parallelization (soon)
 
-You can try it: `pip install furax`, bearing in mind that the library is actively developed and currently in a refactoring phase.
-
+You can try it: `pip install furax`, bearing in mind that the library is actively developed.
 
 
 # FURAX Building Blocks {style="font-size: 35px; align=center;"}
@@ -130,7 +129,7 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | Composition | `A @ B` |   |
 | Multiplication by scalar | `k * A` | Returns the composition of a HomothetyOperator and A|
 | Transpose   | `A.T`  |  Through JAX autodiff, but can be overriden |
-| Inverse     | `A.I` | By default, the CG solver is used, but it can be overriden or configured using a context manager |
+| Inverse     | `A.I` or <br>`A.I(solver=..., maxiter=..., preconditioner=...)` | By default, the CG solver is used, but it can be overriden |
 | Block Assembly | `BlockColumnOperator([A, B])` `BlockDiagonalOperator([A, B])` `BlockRowOperator([A, B])` | Handle any PyTree of Operators: `Block*Operator({'a': A, 'b': B})`|
 | Flattened dense matrix | `A.as_matrix()` | |
 | Algebraic reduction | `A.reduce()` | |
@@ -139,18 +138,15 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 
 :::
 
-## FURAX Operators {style="font-size: 18px;"}
-
-<br/>
-<br/>
+## FURAX Operators
 
 ::: {.columns}
 
-::: {.column width="60%"}
+:::: {.column width="50%"}
 
-::: {.solutionbox}
+::::: {.solutionbox}
 
-:::{.solutionbox-body style="font-size: 17px;"}
+:::::: {.solutionbox-body style="font-size: 17px;"}
 
 | Generic Operator                | Description |
 |---------------------------------|-------------|
@@ -158,27 +154,30 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `HomothetyOperator`             |             |
 | `DiagonalOperator`              |             |
 | `BroadcastDiagonalOperator`     | Non-square operator for broadcasting |
-| `TensorOperator`    | For dense matrix operations |
+| `TensorOperator`                | For dense matrix operations |
+| `TreeOperator`                  | For generalized matrix operations |
+| `SumOperator`                   | Sum along axes |
 | `IndexOperator`                 | Can be used for projecting skies onto time-ordered series|
+| `MaskOperator`                  | Bit-encoded 0- or 1-valued mask|
 | `MoveAxisOperator`              |             |
 | `ReshapeOperator`               |             |
 | `RavelOperator`                 |             |
-| `SymmetricBandToeplitzOperator` | Methods: direct, FFT, overlap and save |
-| `Block*Operator` | Block assembly operators (column, diagonal, row)|
+| `SymmetricBandToeplitzOperator`{style="font-size: 15px;"} | Methods: direct, FFT, overlap and save |
+| `Block*Operator`                | Block assembly operators (column, diagonal, row)|
 
-:::
+: {tbl-colwidths="[50,50]"}
 
-:::
+::::::
 
+:::::
 
-:::
+::::
 
-::: {.column width="40%"}
+:::: {.column width="50%"}
 
-::: {.solutionbox}
+::::: {.solutionbox}
 
-:::{.solutionbox-body style="font-size: 17px;"}
-
+:::::: {.solutionbox-body style="font-size: 17px;"}
 
 | Applied Operator          | Description |
 |---------------------------|-------------|
@@ -188,14 +187,27 @@ The base class `AbstractLinearOperator` provides a default implementation for th
 | `CMBOperator`             | Parametrized CMB SED |
 | `DustOperator`            | Parametrized dust SED |
 | `SynchrotronOperator`     | Parametrized synchrotron SED |
+| 'PointingOperator'        | On-the-fly projection matrix |
+| `MapSpaceBeamOperator`    | Sparse Beam operator |
+| `TemplateOperator`        | For template map-making |
+
+::::::
+
+:::::
+
+::::
 
 :::
 
-:::
+## FURAX other components (see today's talks)
 
-:::
-
-:::
+- preconditioners
+- several map-makers
+- TOAST interface
+- SOTODLib interface
+- spectral likelihood
+- WCS: Healpix & Plate carrée
+- ability to pad observations (JAX constraint)
 
 
 # Multi-level Optimizations {style="font-size: 35px;"}
@@ -354,9 +366,38 @@ def func_full(x):
 
 ## XLA Common Subexpression Elimination (CSE)
 
-:::: {.columns}
+::: {.columns}
 
 ::: {.column width="50%"}
+::::{.solutionbox}
+
+:::::{.solutionbox-header style="font-size: 22px;"}
+
+**XLA Common Subexpression Elimination (CSE)**
+
+:::::
+
+:::::{.solutionbox-body style="font-size: 20px;"}
+
+- **Definition**: CSE identifies and eliminates duplicate computations within a function to optimize performance.
+
+- **Benefits**:
+  - Reduces redundant computation.
+  - Enhances runtime efficiency and memory usage.
+
+:::::: {.fragment fragment-index=1}
+
+- **Example in Code**:
+  - Without CSE: `jnp.sin(theta)` computed twice.
+  - After CSE: Shared computation across `a` and `b`.
+
+::::::
+
+:::::
+
+::::
+
+::::: {.fragment fragment-index=1}
 
 ```python
 import jax
@@ -367,49 +408,21 @@ def func_cse(theta):
     a = jnp.sin(theta)
     b = jnp.sin(theta) + 1
     return a + b
- ```
-
-:::{.fragment fragment-index=2}
-
-:::{.solutionbox}
-
-:::{.solutionbox-header style="font-size: 22px;"}
-
-**XLA Common Subexpression Elimination (CSE)**
-
-:::
-
-::::{.solutionbox-body style="font-size: 20px;"}
-
-- **Definition**: CSE identifies and eliminates duplicate computations within a function to optimize performance.
-
-- **Example in Code**:
-  - Without CSE: `jnp.sin(theta)` computed twice.
-  - After CSE: Shared computation across `a` and `b`.
-
-- **Benefits**:
-  - Reduces redundant computation.
-  - Enhances runtime efficiency and memory usage.
-
+```
+:::::
 ::::
 
-:::
+:::: {.column width="50%"}
 
-:::
-
-:::
-
-::: {.column width="50%"}
-
-::: {.fragment fragment-index=1}
+::::: {.fragment fragment-index=2}
 
 ![Compiled StableHLO representation](assets/hlo/hlo-func-cse.png){fig-align="center" width="60%" style="border: 2px solid #000000;"}
 
-:::
-
-:::
+:::::
 
 ::::
+
+:::
 
 
 ## JAX GPU Compilation Chain with FURAX
@@ -567,3 +580,15 @@ The combination is reduced to
 $$
 \mathbf{P}^\top \mathbf{N}^{-1} \mathbf{P} = \mathbf{P}_1^\top \mathbf{N}_1^{-1} \mathbf{P}_1^{\,} + \mathbf{P}_2^\top \mathbf{N}_2^{-1} \mathbf{P}_2^{\,}.
 $$
+
+
+## Next steps
+
+<br>
+<br>
+<br>
+
+- Full processing of several observation using padding
+- Distribution GPU
+- Other experiment (QUBIC ?)
+

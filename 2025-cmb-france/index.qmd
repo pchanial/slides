@@ -2,7 +2,8 @@
 title: "FURAX: a modular JAX toolbox for solving inverse problems in science "
 
 author:
-  - "Pierre Chanial, Wassim Kabalan, Simon Biquart, Wuhyun Sohn, Artem Basyrov"
+  - "Pierre Chanial, Artem Basyrov, Simon Biquart, Wassim Kabalan,"
+  - "Wuhyun Sohn and the SciPol Team"
 
 format:
   revealjs:
@@ -25,11 +26,13 @@ title-slide-attributes:
 
 logo1 : '
 <div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
+  <img src="assets/scipol/trombinoscope-1.png" style="width: 40%;"/>
+  <img src="assets/scipol/trombinoscope-2.png" style="width: 40%;"/>
+</div>
+<div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
   <img src="assets/Logos/Furax_logo_transparent.png" style="width: 25%;"/>
   <img src="assets/Logos/JaxLogo.png" style="width: 15%;"/>
   <img src="assets/Logos/Python.png" style="width: 20%;"/>
-</div>
-<div style="display: flex; justify-content: space-around; align-items: center; layout-valign="middle">
   <img src="assets/Logos/APC.png" style="width: 15%;"/>
   <img src="assets/Logos/scipol.png" style="width: 15%;"/>
   <img src="assets/Logos/ERC.svg" style="width: 15%;"/>

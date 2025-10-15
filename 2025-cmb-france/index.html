@@ -9,7 +9,7 @@
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.25">
 
-  <meta name="author" content="Pierre Chanial, Wassim Kabalan, Simon Biquart">
+  <meta name="author" content="Pierre Chanial, Wassim Kabalan, Simon Biquart, Wuhyun Sohn, Artem Basyrov">
   <title>FURAX: a modular JAX toolbox for solving inverse problems in science</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -194,7 +194,7 @@
 
 <section id="title-slide" data-background-image="assets/Wallpaper-datacenter-tetris.png" data-background-opacity="0.2" data-background-size="fill" class="center">
   <h1 class="title">FURAX: a modular JAX toolbox for solving inverse problems in science</h1>
-  <p class="author">Pierre Chanial, Wassim Kabalan, Simon Biquart</p>
+  <p class="author">Pierre Chanial, Wassim Kabalan, Simon Biquart, Wuhyun Sohn, Artem Basyrov</p>
   <div style=""></div>
 <div style="margin-top: 20px; text-align: center;align-items: bottom;">
   <div style="display: flex; justify-content: space-around; align-items: center; layout-valign=" middle"=""> <img src="assets/Logos/Furax_logo_transparent.png" style="width: 25%;"> <img src="assets/Logos/JaxLogo.png" style="width: 15%;"> <img src="assets/Logos/Python.png" style="width: 20%;"> </div><br>
@@ -297,8 +297,8 @@
 </tr>
 <tr class="odd">
 <td>Inverse</td>
-<td><code>A.I</code></td>
-<td>By default, the CG solver is used, but it can be overriden or configured using a context manager</td>
+<td><code>A.I</code> or <br><code>A.I(solver=..., maxiter=..., preconditioner=...)</code></td>
+<td>By default, the CG solver is used, but it can be overriden</td>
 </tr>
 <tr class="even">
 <td>Block Assembly</td>
@@ -319,17 +319,16 @@
 </table>
 </div>
 </section>
-<section id="furax-operators-1" class="slide level2" style="font-size: 18px;">
+<section id="furax-operators-1" class="slide level2">
 <h2>FURAX Operators</h2>
-<p><br> <br></p>
 <div class="columns">
-<div class="column" style="width:60%;">
+<div class="column" style="width:50%;">
 <div class="solutionbox">
 <div class="solutionbox-body" style="font-size: 17px;">
 <table class="caption-top">
 <colgroup>
-<col style="width: 71%">
-<col style="width: 28%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -359,26 +358,38 @@
 <td>For dense matrix operations</td>
 </tr>
 <tr class="even">
+<td><code>TreeOperator</code></td>
+<td>For generalized matrix operations</td>
+</tr>
+<tr class="odd">
+<td><code>SumOperator</code></td>
+<td>Sum along axes</td>
+</tr>
+<tr class="even">
 <td><code>IndexOperator</code></td>
 <td>Can be used for projecting skies onto time-ordered series</td>
 </tr>
 <tr class="odd">
+<td><code>MaskOperator</code></td>
+<td>Bit-encoded 0- or 1-valued mask</td>
+</tr>
+<tr class="even">
 <td><code>MoveAxisOperator</code></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ReshapeOperator</code></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>RavelOperator</code></td>
 <td></td>
 </tr>
-<tr class="even">
-<td><code>SymmetricBandToeplitzOperator</code></td>
+<tr class="odd">
+<td><code style="font-size: 15px;">SymmetricBandToeplitzOperator</code></td>
 <td>Methods: direct, FFT, overlap and save</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Block*Operator</code></td>
 <td>Block assembly operators (column, diagonal, row)</td>
 </tr>
@@ -386,7 +397,7 @@
 </table>
 </div>
 </div>
-</div><div class="column" style="width:40%;">
+</div><div class="column" style="width:50%;">
 <div class="solutionbox">
 <div class="solutionbox-body" style="font-size: 17px;">
 <table class="caption-top">
@@ -421,11 +432,33 @@
 <td><code>SynchrotronOperator</code></td>
 <td>Parametrized synchrotron SED</td>
 </tr>
+<tr class="odd">
+<td>‘PointingOperator’</td>
+<td>On-the-fly projection matrix</td>
+</tr>
+<tr class="even">
+<td><code>MapSpaceBeamOperator</code></td>
+<td>Sparse Beam operator</td>
+</tr>
+<tr class="odd">
+<td><code>TemplateOperator</code></td>
+<td>For template map-making</td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 </div></div>
+</section>
+<section id="furax-other-components-see-todays-talks" class="slide level2">
+<h2>FURAX other components (see today’s talks)</h2>
+<ul>
+<li>preconditioners</li>
+<li>several map-makers</li>
+<li>TOAST interface</li>
+<li>SOTODLib interface</li>
+<li>ability to pad observations (JAX constraint)</li>
+</ul>
 </section></section>
 <section>
 <section id="multi-level-optimizations" class="title-slide slide level1 center" style="font-size: 35px;">

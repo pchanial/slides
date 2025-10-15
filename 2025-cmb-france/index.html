@@ -542,7 +542,7 @@
 <span id="cb3-5"><a></a><span class="kw">def</span> func_dce(x):</span>
 <span id="cb3-6"><a></a>    unused <span class="op">=</span> jnp.sin(x)</span>
 <span id="cb3-7"><a></a>    y <span class="op">=</span> jnp.exp(x)</span>
-<span id="cb3-8"><a></a>    <span class="cf">return</span> y[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-8"><a></a>    <span class="cf">return</span> y[:<span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="fragment" data-fragment-index="1">
 <div class="quarto-figure quarto-figure-center">
 <figure>

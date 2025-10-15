@@ -249,7 +249,7 @@
     "href": "2025-cmb-france/index.html#dead-code-elimination-dce",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "Dead Code Elimination (DCE)",
-    "text": "Dead Code Elimination (DCE)\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_dce(x):\n    unused = jnp.sin(x)\n    y = jnp.exp(x)\n    return y[0]\n\n\n\n\nCompiled StableHLO representation\n\n\n\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_full(x):\n    return jnp.exp(x)\n\n\n\n\n\n\n\nFull computation vs DCE"
+    "text": "Dead Code Elimination (DCE)\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_dce(x):\n    unused = jnp.sin(x)\n    y = jnp.exp(x)\n    return y[:2]\n\n\n\n\nCompiled StableHLO representation\n\n\n\n\n\nimport jax\nimport jax.numpy as jnp\n\n@jax.jit\ndef func_full(x):\n    return jnp.exp(x)\n\n\n\n\n\n\n\nFull computation vs DCE"
   },
   {
     "objectID": "2025-cmb-france/index.html#xla-common-subexpression-elimination-cse",

@@ -305,6 +305,6 @@
     "href": "2025-cmb-france/index.html#next-steps",
     "title": "FURAX: a modular JAX toolbox for solving inverse problems in science",
     "section": "Next steps",
-    "text": "Next steps\n  \n\nFull processing of several observations using padding\nDistribution of the processing on several GPUs\nBecause of Furax genericity, it could be applied to other experiments (QUBIC, LiteBIRD, SPT, BICEP, POLARYS, …?)"
+    "text": "Next steps\n  \n\nFull processing of several observations using padding\nDistribution of the processing on several GPUs\nBecause of Furax genericity, it could be applied to other experiments (QUBIC, LiteBIRD, SPT, BICEP, POLARYS, FOSSIL, …?)"
   }
 ]
